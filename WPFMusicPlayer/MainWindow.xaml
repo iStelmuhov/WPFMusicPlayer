@@ -1,0 +1,96 @@
+﻿<metro:MetroWindow x:Class="WPFMusicPlayer.MainWindow"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:command="http://www.galasoft.ch/mvvmlight"
+                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                   xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                   xmlns:local="clr-namespace:WPFMusicPlayer.ViewModel"
+                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                   xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+                   Title="MainWindow"
+                   Width="800"
+                   Height="400"
+                   mc:Ignorable="d">
+    <Window.DataContext>
+        <local:MainViewModel />
+    </Window.DataContext>
+    <Grid x:Name="Root">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="7*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1.5*" />
+            <RowDefinition Height="9*" />
+        </Grid.RowDefinitions>
+        <Viewbox Grid.Row="0"
+                 Grid.Column="1"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Center">
+            <TextBlock Margin="30,10,0,5"
+                       FontSize="16"
+                       Text="Мои аудиозаписи" />
+        </Viewbox>
+
+        <WrapPanel x:Name="ButtonsPanel"
+                   Grid.Row="1"
+                   Grid.Column="0">
+            <RadioButton Width="{Binding ElementName=ButtonsPanel, Path=ActualWidth}" Height="auto" />
+        </WrapPanel>
+        <ListView x:Name="AudiosList"
+                  Grid.Row="1"
+                  Grid.Column="1"
+                  IsSynchronizedWithCurrentItem="True"
+                  ItemsSource="{Binding Audios}"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  ScrollViewer.VerticalScrollBarVisibility="Hidden">
+            <i:Interaction.Triggers>
+                <!--
+                <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                    <command:EventToCommand Command="{Binding ListViewPreviewItem, Mode=OneWay}" />
+                </i:EventTrigger>
+                -->
+                <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                    <command:EventToCommand Command="{Binding ListViewItemClick, Mode=OneWay}" />
+                </i:EventTrigger>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <command:EventToCommand Command="{Binding ListViewItemChanged, Mode=OneWay}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <WrapPanel Orientation="Horizontal">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseLeftButtonUp">
+                                <command:EventToCommand Command="{Binding Path=ListViewItemClick, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainViewModel}}, Mode=OneWay}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <Viewbox Width="40" Height="40">
+                            <Canvas x:Name="AudioListItemCanvas"
+                                    Width="24"
+                                    Height="24">
+                                <Path x:Name="PausePath"
+                                      Data="M14,19.14H18V5.14H14M6,19.14H10V5.14H6V19.14Z"
+                                      Fill="{StaticResource CheckBoxBrush}"
+                                      Visibility="Hidden" />
+                                <Path x:Name="PlayPath"
+                                      Data="M8,5.14V19.14L19,12.14L8,5.14Z"
+                                      Fill="{StaticResource CheckBoxBrush}"
+                                      Visibility="Visible" />
+                            </Canvas>
+                        </Viewbox>
+                        <WrapPanel Orientation="Vertical">
+                            <TextBlock Margin="10,0,0,0"
+                                       FontSize="16"
+                                       Text="{Binding Title}" />
+                            <TextBlock Margin="10,0,0,0"
+                                       FontSize="10"
+                                       FontWeight="ExtraLight"
+                                       Text="{Binding Artist}" />
+                        </WrapPanel>
+                    </WrapPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</metro:MetroWindow>
