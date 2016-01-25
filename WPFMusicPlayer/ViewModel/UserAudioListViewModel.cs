@@ -42,40 +42,19 @@ namespace WPFMusicPlayer.ViewModel
             }
         }
 
-
-
-        public const string SelectedAudioPropertyName = "SelectedAudio";
-        private AudioFile _selectedAudioFile = new AudioFile();
-        public AudioFile SelectedAudio
-        {
-            get
-            {
-                return _selectedAudioFile;
-            }
-
-            set
-            {
-                if (_selectedAudioFile == value)
-                {
-                    return;
-                }
-
-                _selectedAudioFile = value;
-                RaisePropertyChanged(SelectedAudioPropertyName);
-            }
-        }
-
         public UserAudioListViewModel()
         {
             _mainVm = ((MainViewModel) Application.Current.MainWindow.DataContext);
             Audios = new ObservableCollection<Audio>(_mainVm.VkApi.Audio.Get((ulong)_mainVm.VkApi.UserId.Value));
+
+            
         }
 
         public UserAudioListViewModel(MainViewModel mvm)
         {
             _mainVm = mvm;
 
-            //Audios = new ObservableCollection<Audio>(_mainVm.VkApi.Audio.Get((ulong)_mainVm.VkApi.UserId.Value));
+            Audios = new ObservableCollection<Audio>(_mainVm.VkApi.Audio.Get((ulong)_mainVm.VkApi.UserId.Value));
         }
 
         private childItem FindVisualChild<childItem>(DependencyObject obj)
@@ -107,19 +86,16 @@ namespace WPFMusicPlayer.ViewModel
                     {
 
 
-                        MakeCanvasPictureVisible(Picture.Play, SelectedAudio.VkAudio);
+                        MakeCanvasPictureVisible(Picture.Play,_mainVm.SelectedAudio.VkAudio);
 
                         MakeCanvasPictureVisible(Picture.Pause, ((UserAudioList)((MainWindow)Application.Current.MainWindow).UserListItem.Content).AudiosList.SelectedItem);
-                        SelectedAudio.VkAudio = ((UserAudioList)((MainWindow)Application.Current.MainWindow).UserListItem.Content).AudiosList.SelectedItem as Audio;
-                        SelectedAudio.PlayAudio();
+                        _mainVm.SelectedAudio.VkAudio = ((UserAudioList)((MainWindow)Application.Current.MainWindow).UserListItem.Content).AudiosList.SelectedItem as Audio;
+                        _mainVm.SelectedAudio.PlayAudio();
                     }));
             }
         }
 
         private RelayCommand _listViewItemClick;
-
-
-
         public RelayCommand ListViewItemClick
         {
             get
@@ -128,19 +104,22 @@ namespace WPFMusicPlayer.ViewModel
                     ?? (_listViewItemClick = new RelayCommand(
                     () =>
                     {
-                        if (SelectedAudio.VkAudio !=
+                        _mainVm.SelectedAudio.UsedList = ((MainWindow)Application.Current.MainWindow).UserListItem.Content as UserAudioList;
+
+                        if (_mainVm.SelectedAudio.VkAudio !=
                             ((UserAudioList)((MainWindow)Application.Current.MainWindow).UserListItem.Content).AudiosList.SelectedItem)
                             return;
-
-                        if (SelectedAudio.isPlaying)
+                        ///////!!!!!!!!!!!!!!!! UP
+                        
+                        if (_mainVm.SelectedAudio.IsPlaying)
                         {
-                            MakeCanvasPictureVisible(Picture.Play, SelectedAudio.VkAudio);
-                            SelectedAudio.PauseAudio();
+                            MakeCanvasPictureVisible(Picture.Play, _mainVm.SelectedAudio.VkAudio);
+                            _mainVm.SelectedAudio.PauseAudio();
                         }
                         else
                         {
-                            MakeCanvasPictureVisible(Picture.Pause, SelectedAudio.VkAudio);
-                            SelectedAudio.PlayAudio();
+                            MakeCanvasPictureVisible(Picture.Pause, _mainVm.SelectedAudio.VkAudio);
+                            _mainVm.SelectedAudio.PlayAudio();
                         }
                     }));
             }

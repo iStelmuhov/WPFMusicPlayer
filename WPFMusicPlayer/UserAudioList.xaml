@@ -16,7 +16,6 @@
     </UserControl.DataContext>
 
     <ListView x:Name="AudiosList"
-              IsSynchronizedWithCurrentItem="True"
               ItemsSource="{Binding Audios}"
               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
               ScrollViewer.VerticalScrollBarVisibility="Hidden">
