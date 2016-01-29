@@ -104,6 +104,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Classes\AudioFile.cs" />
+    <Compile Include="Classes\InverseBooleanConverter.cs" />
+    <Compile Include="Classes\NullBooleanConverter.cs" />
     <Compile Include="Enums\Picture.cs" />
     <Compile Include="UserAudioList.xaml.cs">
       <DependentUpon>UserAudioList.xaml</DependentUpon>

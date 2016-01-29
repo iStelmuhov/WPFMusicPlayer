@@ -61,6 +61,50 @@ namespace WPFMusicPlayer.ViewModel
             }
         }
 
+
+        public const string RepeatAudioPropertyName = "RepeatAudio";
+        private bool _repeatAudio = false;
+        public bool RepeatAudio
+        {
+            get
+            {
+                return _repeatAudio;
+            }
+
+            set
+            {
+                if (_repeatAudio == value)
+                {
+                    return;
+                }
+
+                _repeatAudio = value;
+                RaisePropertyChanged(RepeatAudioPropertyName);
+            }
+        }
+
+
+        public const string ShufflePropertyName = "Shuffle";
+        private bool _shuffle = false;
+        public bool Shuffle
+        {
+            get
+            {
+                return _shuffle;
+            }
+
+            set
+            {
+                if (_shuffle == value)
+                {
+                    return;
+                }
+
+                _shuffle = value;
+                RaisePropertyChanged(ShufflePropertyName);
+            }
+        }
+
         public MainViewModel()
         {
             _autorizeAuthParams=new ApiAuthParams();
@@ -71,14 +115,10 @@ namespace WPFMusicPlayer.ViewModel
             _autorizeAuthParams.Password = "Stelmuhov";
             _autorizeAuthParams.ApplicationId = APPID;
             _autorizeAuthParams.Settings = Settings.All;
-
-            //SelectedAudio.Player.Open(new Uri("C:\\Users\\Татьяна\\Documents\\Visual Studio 2015\\Projects\\WPFMusicPlayer\\WPFMusicPlayer\\005. Big Gun.mp3"));
-            //SelectedAudio.Player.Play();
             
              VkApi.Authorize(_autorizeAuthParams);
 
-            _timer=new DispatcherTimer();
-            _timer.Interval = TimeSpan.FromSeconds(1);
+            _timer = new DispatcherTimer {Interval = TimeSpan.FromSeconds(1)};
             _timer.Tick += _timer_Tick;
            
 
@@ -86,18 +126,20 @@ namespace WPFMusicPlayer.ViewModel
             SelectedAudio.Player.MediaEnded += Player_MediaEnded;
         }
 
-        
 
-        private RelayCommand _myCommand;
-        public RelayCommand MyCommand
+        private RelayCommand<bool> _myCommand;
+        public RelayCommand<bool> MyCommand
         {
             get
             {
                 return _myCommand
-                    ?? (_myCommand = new RelayCommand(
-                    () =>
+                    ?? (_myCommand = new RelayCommand<bool>(
+                    (isDark) =>
                     {
                         int a = 2;
+
+
+                        new PaletteHelper().SetLightDark(isDark);
                     }));
             }
         }
@@ -160,6 +202,17 @@ namespace WPFMusicPlayer.ViewModel
             _timer.Stop();
 
             RaisePropertyChanged(() => SelectedAudio.Player.HasAudio);
+
+            if (RepeatAudio)
+            {
+                SelectedAudio.StopAudio();
+                SelectedAudio.PlayAudio();
+                Player_MediaOpened(this,EventArgs.Empty);
+            }
+            else
+            {
+                SelectedAudio.NextAudio(Shuffle);
+            }
         }
 
         private void Player_MediaOpened(object sender, EventArgs e)
@@ -172,7 +225,6 @@ namespace WPFMusicPlayer.ViewModel
             ((MainWindow) Application.Current.MainWindow).TotalPlayTime.Text =
                 SelectedAudio.Player.NaturalDuration.TimeSpan.ToString(@"mm\:ss");
 
-            RaisePropertyChanged(()=>SelectedAudio.Player.HasAudio);
         }
 
         private void _timer_Tick(object sender, EventArgs e)
@@ -183,6 +235,44 @@ namespace WPFMusicPlayer.ViewModel
                     SelectedAudio.Player.Position.TotalSeconds;
 
                 ((MainWindow)Application.Current.MainWindow).PlaybackTime.Text= SelectedAudio.Player.Position.ToString(@"mm\:ss");
+            }
+        }
+
+        private RelayCommand _previewAudioTrackCommand;
+        public RelayCommand PreviewAudioTrack
+        {
+            get
+            {
+                return  _previewAudioTrackCommand
+                    ?? ( _previewAudioTrackCommand = new RelayCommand(
+                    () =>
+                    {
+                        try
+                        {
+                            SelectedAudio.PreviewAudio(Shuffle);
+                        }
+                        catch (NullReferenceException) {}
+                       
+                    }));
+            }
+        }
+
+        private RelayCommand _nextAudioTrackCommand;
+        public RelayCommand NextAudioTrack
+        {
+            get
+            {
+                return _nextAudioTrackCommand
+                    ?? (_nextAudioTrackCommand = new RelayCommand(
+                    () =>
+                    {
+                        try
+                        {
+                           SelectedAudio.NextAudio(Shuffle);
+                        }
+                        catch (NullReferenceException){}
+
+                    }));
             }
         }
     }

@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -19,7 +20,7 @@ namespace WPFMusicPlayer.ViewModel
 {
     public class UserAudioListViewModel:ViewModelBase
     {
-        private MainViewModel _mainVm ;
+        public MainViewModel MainVm { get; set; }
 
         public const string AudiosPropertyName = "Audios";
         private ObservableCollection<Audio> _audios = new ObservableCollection<Audio>();
@@ -44,20 +45,20 @@ namespace WPFMusicPlayer.ViewModel
 
         public UserAudioListViewModel()
         {
-            _mainVm = ((MainViewModel) Application.Current.MainWindow.DataContext);
-            Audios = new ObservableCollection<Audio>(_mainVm.VkApi.Audio.Get((ulong)_mainVm.VkApi.UserId.Value));
+            MainVm = ((MainViewModel) Application.Current.MainWindow.DataContext);
+            Audios = new ObservableCollection<Audio>(MainVm.VkApi.Audio.Get((ulong)MainVm.VkApi.UserId.Value));
 
             
         }
 
         public UserAudioListViewModel(MainViewModel mvm)
         {
-            _mainVm = mvm;
+            MainVm = mvm;
 
-            Audios = new ObservableCollection<Audio>(_mainVm.VkApi.Audio.Get((ulong)_mainVm.VkApi.UserId.Value));
+            Audios = new ObservableCollection<Audio>(MainVm.VkApi.Audio.Get((ulong)MainVm.VkApi.UserId.Value));
         }
 
-        private childItem FindVisualChild<childItem>(DependencyObject obj)
+        private static childItem FindVisualChild<childItem>(DependencyObject obj)
           where childItem : DependencyObject
         {
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
@@ -84,13 +85,13 @@ namespace WPFMusicPlayer.ViewModel
                     ?? (_listViewItemChanged = new RelayCommand(
                     () =>
                     {
+                        MainVm.SelectedAudio.UsedList = ((MainWindow)Application.Current.MainWindow).UserListItem.Content as UserAudioList;
 
+                        ChangeListPlayButtonVisibility(MainVm.SelectedAudio.VkAudio,Visibility.Collapsed);
+                        ChangeListPlayButtonVisibility(((UserAudioList)((MainWindow)Application.Current.MainWindow).UserListItem.Content).AudiosList.SelectedItem,Visibility.Visible);
 
-                        MakeCanvasPictureVisible(Picture.Play,_mainVm.SelectedAudio.VkAudio);
-
-                        MakeCanvasPictureVisible(Picture.Pause, ((UserAudioList)((MainWindow)Application.Current.MainWindow).UserListItem.Content).AudiosList.SelectedItem);
-                        _mainVm.SelectedAudio.VkAudio = ((UserAudioList)((MainWindow)Application.Current.MainWindow).UserListItem.Content).AudiosList.SelectedItem as Audio;
-                        _mainVm.SelectedAudio.PlayAudio();
+                        MainVm.SelectedAudio.VkAudio = ((UserAudioList)((MainWindow)Application.Current.MainWindow).UserListItem.Content).AudiosList.SelectedItem as Audio;
+                        MainVm.SelectedAudio.PlayAudio();
                     }));
             }
         }
@@ -104,28 +105,28 @@ namespace WPFMusicPlayer.ViewModel
                     ?? (_listViewItemClick = new RelayCommand(
                     () =>
                     {
-                        _mainVm.SelectedAudio.UsedList = ((MainWindow)Application.Current.MainWindow).UserListItem.Content as UserAudioList;
+                        MainVm.SelectedAudio.UsedList = ((MainWindow)Application.Current.MainWindow).UserListItem.Content as UserAudioList;
 
-                        if (_mainVm.SelectedAudio.VkAudio !=
-                            ((UserAudioList)((MainWindow)Application.Current.MainWindow).UserListItem.Content).AudiosList.SelectedItem)
+
+                        if (MainVm.SelectedAudio.VkAudio !=
+                            ((UserAudioList)((MainWindow)Application.Current.MainWindow).UserListItem.Content).AudiosList.SelectedItem || MainVm.SelectedAudio.VkAudio==null)
                             return;
                         ///////!!!!!!!!!!!!!!!! UP
                         
-                        if (_mainVm.SelectedAudio.IsPlaying)
+                        if (MainVm.SelectedAudio.IsPlaying)
                         {
-                            MakeCanvasPictureVisible(Picture.Play, _mainVm.SelectedAudio.VkAudio);
-                            _mainVm.SelectedAudio.PauseAudio();
+                            MainVm.SelectedAudio.PauseAudio();
                         }
                         else
                         {
-                            MakeCanvasPictureVisible(Picture.Pause, _mainVm.SelectedAudio.VkAudio);
-                            _mainVm.SelectedAudio.PlayAudio();
+                            MainVm.SelectedAudio.PlayAudio();
                         }
                     }));
             }
         }
 
-        private void MakeCanvasPictureVisible(Picture picture, object listItem)
+
+        public static void ChangeListPlayButtonVisibility(object listItem, Visibility visibility)
         {
             ListBoxItem listBoxItem =
                             (ListBoxItem)
@@ -136,29 +137,8 @@ namespace WPFMusicPlayer.ViewModel
             ContentPresenter contentPresenter = FindVisualChild<ContentPresenter>(listBoxItem);
             DataTemplate dataTemplate = contentPresenter.ContentTemplate;
 
-            Canvas itemCanvas = (Canvas)dataTemplate.FindName("AudioListItemCanvas", contentPresenter);
-
-            Path playFigure = (Path)itemCanvas.FindName("PlayPath");
-            Path pauseFigure = (Path)itemCanvas.FindName("PausePath");
-
-            switch (picture)
-            {
-                case Picture.Pause:
-                    {
-                        pauseFigure.Visibility = Visibility.Visible;
-                        playFigure.Visibility = Visibility.Hidden;
-
-                        break;
-                    }
-
-                case Picture.Play:
-                    {
-                        playFigure.Visibility = Visibility.Visible;
-                        pauseFigure.Visibility = Visibility.Hidden;
-
-                        break;
-                    }
-            }
+            ToggleButton itemToggleButton = (ToggleButton) dataTemplate.FindName("PausePlayButton", contentPresenter);
+            itemToggleButton.Visibility = visibility;
         }
 
     }

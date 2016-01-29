@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Linq;
+using System.Windows;
 using System.Windows.Media;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.CommandWpf;
 using VkNet.Model;
 using VkNet.Model.Attachments;
+using WPFMusicPlayer.Enums;
 using WPFMusicPlayer.ViewModel;
 
 namespace WPFMusicPlayer.Classes
@@ -33,7 +36,7 @@ namespace WPFMusicPlayer.Classes
         }
 
         public const string VkAudioPropertyName = "VkAudio";
-        private Audio _vkAudio = new Audio();
+        private Audio _vkAudio = null;
         public Audio VkAudio
         {
             get
@@ -75,25 +78,37 @@ namespace WPFMusicPlayer.Classes
             }
         }
 
-        public bool IsPlaying { get; private set; }
+
+        public const string IsPlayingPropertyName = "IsPlaying";
+        private bool _isPlaying = false;
+        public bool IsPlaying
+        {
+            get
+            {
+                return _isPlaying;
+            }
+
+            set
+            {
+                if (_isPlaying == value)
+                {
+                    return;
+                }
+
+                _isPlaying = value;
+                RaisePropertyChanged(IsPlayingPropertyName);
+            }
+        }
+
+
         public bool UserIsDraggingSlider { get; set; }
-
-
 
         public AudioFile():base()
         {
             Player = new MediaPlayer();
             IsPlaying = false;
-
-            Player.MediaEnded += Player_MediaEnded;
         }
 
-
-
-        private void Player_MediaEnded(object sender, EventArgs e)
-        {
-            NextAudio();
-        }
 
         public void PlayAudio()
         {
@@ -106,7 +121,7 @@ namespace WPFMusicPlayer.Classes
 
         public void PauseAudio()
         {
-            if (IsPlaying && Player.CanPause)
+            if (Player.CanPause)
             {
                 Player.Pause();
                 IsPlaying = false;
@@ -122,13 +137,80 @@ namespace WPFMusicPlayer.Classes
             }
         }
 
-        public void NextAudio()
+        public void NextAudio(bool isRandom=false)
         {
-            var Audios = ((UserAudioListViewModel) UsedList.DataContext).Audios;
-            int index = Audios.IndexOf(VkAudio);
+            var audios = ((UserAudioListViewModel) UsedList.DataContext).Audios;
+            if (audios.Count == 0)
+                return;
 
-            if(index != Audios.Count)
-                VkAudio = Audios[++index];
+            UserAudioListViewModel.ChangeListPlayButtonVisibility(VkAudio, Visibility.Collapsed);
+
+            if (isRandom)
+            {
+                Random rand = new Random();
+                int index = rand.Next(0, audios.Count - 1);
+
+                VkAudio = audios[index];
+                UsedList.AudiosList.SelectedItem = VkAudio;
+            }
+            else
+            {
+                int index = audios.IndexOf(VkAudio);
+                if (++index != audios.Count)
+                {
+                    VkAudio = audios[index];
+                    UsedList.AudiosList.SelectedItem = VkAudio;
+                }
+            }
+
+        }
+
+        public void PreviewAudio(bool isRandom=false)
+        {
+            var audios = ((UserAudioListViewModel)UsedList.DataContext).Audios;
+            if (audios.Count == 0)
+                return;
+            
+            UserAudioListViewModel.ChangeListPlayButtonVisibility(VkAudio, Visibility.Collapsed);
+            if (isRandom)
+            {
+                Random rand=new Random();
+                int index = rand.Next(0, audios.Count - 1);
+
+                VkAudio = audios[index];
+                UsedList.AudiosList.SelectedItem = VkAudio;
+            }
+            else
+            {
+                int index = audios.IndexOf(VkAudio);
+                if (--index >= 0)
+                {
+                    VkAudio = audios[index];
+                    UsedList.AudiosList.SelectedItem = VkAudio;
+                }
+            }
+
+        }
+
+        private RelayCommand<bool> _playPauseCommand;
+        public RelayCommand<bool> PlayPause
+        {
+            get
+            {
+                return _playPauseCommand
+                    ?? (_playPauseCommand = new RelayCommand<bool>(
+                    (isCheked) =>
+                    {
+                        if (isCheked)
+                        {
+                            PlayAudio();
+                        }
+                        else
+                        {
+                            PauseAudio();
+                        }
+                    }));
+            }
         }
     }
 }
