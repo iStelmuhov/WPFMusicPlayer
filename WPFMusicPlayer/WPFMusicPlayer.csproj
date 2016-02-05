@@ -104,13 +104,19 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Classes\AudioFile.cs" />
+    <Compile Include="Classes\AudioListViewModel.cs" />
     <Compile Include="Classes\InverseBooleanConverter.cs" />
     <Compile Include="Classes\NullBooleanConverter.cs" />
+    <Compile Include="Classes\PlayPauseConventer.cs" />
     <Compile Include="Enums\Picture.cs" />
+    <Compile Include="RecommendationsAudioList.xaml.cs">
+      <DependentUpon>RecommendationsAudioList.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserAudioList.xaml.cs">
       <DependentUpon>UserAudioList.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\RecommendationsAudioListViewModel.cs" />
     <Compile Include="ViewModel\UserAudioListViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="MainWindow.xaml">
@@ -125,6 +131,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="RecommendationsAudioList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserAudioList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

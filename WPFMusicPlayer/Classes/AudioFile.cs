@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
@@ -52,14 +53,16 @@ namespace WPFMusicPlayer.Classes
                 }
 
                 _vkAudio = value;
-                Player.Open(VkAudio.Url);
+                OnVkAudioChanged();
+                if(VkAudio!=null)
+                    Player.Open(VkAudio.Url);
                 RaisePropertyChanged(VkAudioPropertyName);
             }
         }
 
         public const string UsedListPropertyName = "UsedList";
-        private UserAudioList _usedList = null;
-        public UserAudioList UsedList
+        private UserControl _usedList = null;
+        public UserControl UsedList
         {
             get
             {
@@ -137,13 +140,13 @@ namespace WPFMusicPlayer.Classes
             }
         }
 
-        public void NextAudio(bool isRandom=false)
+        public bool NextAudio(bool isRandom=false)
         {
-            var audios = ((UserAudioListViewModel) UsedList.DataContext).Audios;
+            var audios = ((AudioListViewModel) UsedList.DataContext).Audios;
             if (audios.Count == 0)
-                return;
+                return false;
 
-            UserAudioListViewModel.ChangeListPlayButtonVisibility(VkAudio, Visibility.Collapsed);
+            ((AudioListViewModel)UsedList.DataContext).ChangeListPlayButtonVisibility(VkAudio, Visibility.Collapsed);
 
             if (isRandom)
             {
@@ -151,7 +154,8 @@ namespace WPFMusicPlayer.Classes
                 int index = rand.Next(0, audios.Count - 1);
 
                 VkAudio = audios[index];
-                UsedList.AudiosList.SelectedItem = VkAudio;
+
+                return true;
             }
             else
             {
@@ -159,26 +163,29 @@ namespace WPFMusicPlayer.Classes
                 if (++index != audios.Count)
                 {
                     VkAudio = audios[index];
-                    UsedList.AudiosList.SelectedItem = VkAudio;
+
+                    return true;
                 }
+                return false;
             }
 
         }
 
-        public void PreviewAudio(bool isRandom=false)
+        public bool PreviewAudio(bool isRandom=false)
         {
-            var audios = ((UserAudioListViewModel)UsedList.DataContext).Audios;
+            var audios = ((AudioListViewModel)UsedList.DataContext).Audios;
             if (audios.Count == 0)
-                return;
-            
-            UserAudioListViewModel.ChangeListPlayButtonVisibility(VkAudio, Visibility.Collapsed);
+                return false;
+
+            ((AudioListViewModel)UsedList.DataContext).ChangeListPlayButtonVisibility(VkAudio, Visibility.Collapsed);
             if (isRandom)
             {
                 Random rand=new Random();
                 int index = rand.Next(0, audios.Count - 1);
 
                 VkAudio = audios[index];
-                UsedList.AudiosList.SelectedItem = VkAudio;
+
+                return true;
             }
             else
             {
@@ -186,8 +193,10 @@ namespace WPFMusicPlayer.Classes
                 if (--index >= 0)
                 {
                     VkAudio = audios[index];
-                    UsedList.AudiosList.SelectedItem = VkAudio;
+              
+                    return true;
                 }
+                return false;
             }
 
         }
@@ -211,6 +220,13 @@ namespace WPFMusicPlayer.Classes
                         }
                     }));
             }
+        }
+
+        public event EventHandler VkAudioChanged;
+
+        protected virtual void OnVkAudioChanged()
+        {
+            VkAudioChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

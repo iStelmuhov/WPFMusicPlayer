@@ -80,6 +80,11 @@
                          Width="150"
                          Content="{Binding SelectedAudio.UsedList}"
                          Header="Текущий плейлист" />
+                <TabItem x:Name="RecommendationsListItem"
+                         Width="150"
+                         Header="Рекомендации">
+                    <wpfMusicPlayer:RecommendationsAudioList />
+                </TabItem>
             </dragablz:TabablzControl>
         </dockablz:Layout>
         <Grid Grid.Row="1"
