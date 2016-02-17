@@ -35,7 +35,7 @@ namespace WPFMusicPlayer.Classes
             }
         }
 
-        protected ToggleButton VisibleItem;
+        protected static ToggleButton VisibleItem;
 
         protected AudioListViewModel()
         {
@@ -65,5 +65,8 @@ where TChildItem : DependencyObject
 
         public virtual void SwitchListPlayButtonVisibility(object listItem)
         { }
+
+        public virtual void UpdateAudioList()
+        {}
     }
 }

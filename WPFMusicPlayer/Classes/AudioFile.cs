@@ -12,7 +12,7 @@ using WPFMusicPlayer.ViewModel;
 
 namespace WPFMusicPlayer.Classes
 {
-    public class AudioFile :ViewModelBase
+    public sealed class AudioFile :ViewModelBase
     {
 
         public const string PlayerPropertyName = "Player";
@@ -224,7 +224,7 @@ namespace WPFMusicPlayer.Classes
 
         public event EventHandler VkAudioChanged;
 
-        protected virtual void OnVkAudioChanged()
+        private void OnVkAudioChanged()
         {
             VkAudioChanged?.Invoke(this, EventArgs.Empty);
         }

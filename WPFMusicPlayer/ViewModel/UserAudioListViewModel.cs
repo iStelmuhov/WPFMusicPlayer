@@ -4,23 +4,21 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Shapes;
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
-using JetBrains.Annotations;
-using VkNet;
-using VkNet.Enums.Filters;
 using VkNet.Model.Attachments;
 using WPFMusicPlayer.Classes;
-using WPFMusicPlayer.Enums;
-using Page = System.Windows.Controls.Page;
 
 namespace WPFMusicPlayer.ViewModel
 {
     public class UserAudioListViewModel: AudioListViewModel
     {
+        public UserAudioListViewModel()
+        {
+            if (MainVm.VkApi.UserId != null)
+                Audios = new ObservableCollection<Audio>(MainVm.VkApi.Audio.Get((ulong)MainVm.VkApi.UserId.Value));
+            MainVm.SelectedAudio.VkAudioChanged += SelectedAudio_VkAudioChanged;
+        }
+
         private void PlayNewAudioFromList()
         {
             MainVm.SelectedAudio.UsedList = ((MainWindow)Application.Current.MainWindow).UserListItem.Content as UserAudioList;
@@ -30,7 +28,9 @@ namespace WPFMusicPlayer.ViewModel
 //            ChangeListPlayButtonVisibility(((UserAudioList)((MainWindow)Application.Current.MainWindow).UserListItem.Content).AudiosList.SelectedItem, Visibility.Visible);
 
             MainVm.SelectedAudio.VkAudio = ((UserAudioList)((MainWindow)Application.Current.MainWindow).UserListItem.Content).AudiosList.SelectedItem as Audio;
-            MainVm.SelectedAudio.PlayAudio();
+
+            if(MainVm.SelectedAudio.VkAudio!=null)
+                MainVm.SelectedAudio.PlayAudio();
         }
 
         private RelayCommand _listViewItemChangedCommand;
@@ -72,24 +72,13 @@ namespace WPFMusicPlayer.ViewModel
                         }
 
                         if (MainVm.SelectedAudio.IsPlaying)
-                        {
                             MainVm.SelectedAudio.PauseAudio();
-                        }
                         else
-                        {
                             MainVm.SelectedAudio.PlayAudio();
-                        }
                     }));
             }
         }
-
-
-        public UserAudioListViewModel()
-        {            
-            Audios = new ObservableCollection<Audio>(MainVm.VkApi.Audio.Get((ulong)MainVm.VkApi.UserId.Value));
-            MainVm.SelectedAudio.VkAudioChanged += SelectedAudio_VkAudioChanged;          
-        }
-
+  
         private void SelectedAudio_VkAudioChanged(object sender, EventArgs e)
         {
             if (MainVm.SelectedAudio.UsedList.GetType() == typeof (UserAudioList))
@@ -102,13 +91,6 @@ namespace WPFMusicPlayer.ViewModel
             }
         }
 
-        public UserAudioListViewModel(MainViewModel mvm)
-        {
-            MainVm = mvm;
-
-            Audios = new ObservableCollection<Audio>(MainVm.VkApi.Audio.Get((ulong)MainVm.VkApi.UserId.Value));
-        }
-       
         private RelayCommand<long> _removeAudioCommand;
         public RelayCommand<long> RemoveAudio
         {
@@ -116,27 +98,32 @@ namespace WPFMusicPlayer.ViewModel
             {
                 return _removeAudioCommand
                     ?? (_removeAudioCommand = new RelayCommand<long>(
-                    (audioId) =>
+                    audioId =>
                     {
                         var audio = Audios.First(a => a.Id == audioId);
 
                         if (audio == MainVm.SelectedAudio.VkAudio)
                         {
-                            if (!MainVm.SelectedAudio.NextAudio(false) && !MainVm.SelectedAudio.PreviewAudio(false))
+                            if (!MainVm.SelectedAudio.NextAudio() && !MainVm.SelectedAudio.PreviewAudio())
                             {
                                 MainVm.SelectedAudio.VkAudio=new Audio();
                             }
                         }
-                            
 
-                        MainVm.VkApi.Audio.Delete((ulong)audioId, audio.OwnerId.Value);
-                        Audios.Remove(audio);
 
+                        if (audio.OwnerId != null) MainVm.VkApi.Audio.Delete((ulong)audioId, audio.OwnerId.Value);
+                            Audios.Remove(audio);
+
+                        // ReSharper disable once ExplicitCallerInfoArgument
                         RaisePropertyChanged(AudiosPropertyName);
                     }));
             }
         }
 
+        private RelayCommand _updateAudioListCommand;
+        public RelayCommand UpdateAudioListCommand => _updateAudioListCommand
+                                                      ?? ( _updateAudioListCommand = new RelayCommand(
+                                                          UpdateAudioList));
 
         public override void ChangeListPlayButtonVisibility(object listItem, Visibility visibility)
         {
@@ -169,6 +156,12 @@ namespace WPFMusicPlayer.ViewModel
 
             VisibleItem = (ToggleButton)dataTemplate.FindName("PausePlayButton", contentPresenter);
             VisibleItem.Visibility = Visibility.Visible;
+        }
+
+        public override void UpdateAudioList()
+        {
+            if (MainVm.VkApi.UserId != null)
+                Audios = new ObservableCollection<Audio>(MainVm.VkApi.Audio.Get((ulong)MainVm.VkApi.UserId.Value));
         }
     }
 }

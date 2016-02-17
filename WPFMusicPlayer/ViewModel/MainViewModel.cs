@@ -1,21 +1,12 @@
 using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using MaterialDesignThemes.Wpf;
 using VkNet;
 using VkNet.Enums.Filters;
-using VkNet.Model.Attachments;
 using WPFMusicPlayer.Classes;
-using WPFMusicPlayer.Enums;
 
 namespace WPFMusicPlayer.ViewModel
 {
@@ -33,9 +24,10 @@ namespace WPFMusicPlayer.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
-        public const ulong APPID = 5233775;
+        public const ulong Appid = 5233775;
 
-        private ApiAuthParams _autorizeAuthParams;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+        private readonly ApiAuthParams _autorizeAuthParams;
         public VkApi VkApi;
 
         private DispatcherTimer _timer;
@@ -57,13 +49,14 @@ namespace WPFMusicPlayer.ViewModel
                 }
 
                 _selectedAudioFile = value;
+                // ReSharper disable once ExplicitCallerInfoArgument
                 RaisePropertyChanged(SelectedAudioPropertyName);
             }
         }
 
 
         public const string RepeatAudioPropertyName = "RepeatAudio";
-        private bool _repeatAudio = false;
+        private bool _repeatAudio;
         public bool RepeatAudio
         {
             get
@@ -79,13 +72,14 @@ namespace WPFMusicPlayer.ViewModel
                 }
 
                 _repeatAudio = value;
+                // ReSharper disable once ExplicitCallerInfoArgument
                 RaisePropertyChanged(RepeatAudioPropertyName);
             }
         }
 
 
         public const string ShufflePropertyName = "Shuffle";
-        private bool _shuffle = false;
+        private bool _shuffle;
         public bool Shuffle
         {
             get
@@ -101,6 +95,7 @@ namespace WPFMusicPlayer.ViewModel
                 }
 
                 _shuffle = value;
+                // ReSharper disable once ExplicitCallerInfoArgument
                 RaisePropertyChanged(ShufflePropertyName);
             }
         }
@@ -113,7 +108,7 @@ namespace WPFMusicPlayer.ViewModel
 
             _autorizeAuthParams.Login = "shyrovec@rambler.ru";
             _autorizeAuthParams.Password = "Stelmuhov";
-            _autorizeAuthParams.ApplicationId = APPID;
+            _autorizeAuthParams.ApplicationId = Appid;
             _autorizeAuthParams.Settings = Settings.All;
             
              VkApi.Authorize(_autorizeAuthParams);
@@ -134,7 +129,7 @@ namespace WPFMusicPlayer.ViewModel
             {
                 return _myCommand
                     ?? (_myCommand = new RelayCommand<bool>(
-                    (isDark) =>
+                    isDark =>
                     {
                         int a = 2;
 
@@ -143,7 +138,6 @@ namespace WPFMusicPlayer.ViewModel
                     }));
             }
         }
-
 
         private RelayCommand _timeSliderLeftButtonDown;
         public RelayCommand TimeSliderLeftButtonDown

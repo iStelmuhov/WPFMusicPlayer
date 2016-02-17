@@ -12,7 +12,7 @@
                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                    xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
                    xmlns:wpfMusicPlayer="clr-namespace:WPFMusicPlayer"
-                   Title="MainWindow"
+                   Title="VK Music Player"
                    Width="1000"
                    Height="600"
                    Background="{DynamicResource MaterialDesignPaper}"

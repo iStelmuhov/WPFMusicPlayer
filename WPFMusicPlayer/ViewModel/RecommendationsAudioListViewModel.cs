@@ -1,12 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Media;
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
+using MahApps.Metro.Controls.Dialogs;
 using VkNet.Model.Attachments;
 using WPFMusicPlayer.Classes;
 
@@ -17,15 +17,9 @@ namespace WPFMusicPlayer.ViewModel
 
         public RecommendationsAudioListViewModel()
         {
-            Audios = new ObservableCollection<Audio>(MainVm.VkApi.Audio.GetRecommendations((ulong)MainVm.VkApi.UserId.Value));
+            if (MainVm.VkApi.UserId != null)
+                Audios = new ObservableCollection<Audio>(MainVm.VkApi.Audio.GetRecommendations((ulong)MainVm.VkApi.UserId.Value));
             MainVm.SelectedAudio.VkAudioChanged += SelectedAudio_VkAudioChanged;
-        }
-
-        public RecommendationsAudioListViewModel(MainViewModel mvm)
-        {
-            MainVm = mvm;
-
-            Audios = new ObservableCollection<Audio>(MainVm.VkApi.Audio.Get((ulong)MainVm.VkApi.UserId.Value));
         }
 
         private void PlayNewAudioFromList()
@@ -33,11 +27,11 @@ namespace WPFMusicPlayer.ViewModel
             MainVm.SelectedAudio.UsedList = ((MainWindow)Application.Current.MainWindow).RecommendationsListItem.Content as UserControl;
 
             SwitchListPlayButtonVisibility(((RecommendationsAudioList)((MainWindow)Application.Current.MainWindow).RecommendationsListItem.Content).AudiosList.SelectedItem);
-            //ChangeListPlayButtonVisibility(MainVm.SelectedAudio.VkAudio, Visibility.Collapsed);
-            //ChangeListPlayButtonVisibility(((RecommendationsAudioList)((MainWindow)Application.Current.MainWindow).RecommendationsListItem.Content).AudiosList.SelectedItem, Visibility.Visible);
 
             MainVm.SelectedAudio.VkAudio = ((RecommendationsAudioList)((MainWindow)Application.Current.MainWindow).RecommendationsListItem.Content).AudiosList.SelectedItem as Audio;
-            MainVm.SelectedAudio.PlayAudio();
+
+            if(MainVm.SelectedAudio.VkAudio!=null)
+                MainVm.SelectedAudio.PlayAudio();
         }
 
         private RelayCommand _listViewItemChanged;
@@ -88,35 +82,43 @@ namespace WPFMusicPlayer.ViewModel
             }
         }
 
-        private RelayCommand<long> _removeAudioCommand;
-        public RelayCommand<long> RemoveAudio
+        private RelayCommand<long> _addAudioCommand;
+        public RelayCommand<long> AddAudio
         {
             get
             {
-                return _removeAudioCommand
-                    ?? (_removeAudioCommand = new RelayCommand<long>(
-                    (audioId) =>
+                return _addAudioCommand
+                    ?? (_addAudioCommand = new RelayCommand<long>(async audioId =>
                     {
                         var audio = Audios.First(a => a.Id == audioId);
-
-                        if (audio == MainVm.SelectedAudio.VkAudio)
+                        if (MainVm.VkApi.UserId != null)
                         {
-                            if (!MainVm.SelectedAudio.NextAudio(false) && !MainVm.SelectedAudio.PreviewAudio(false))
+                            var userAudios = new List<Audio>(MainVm.VkApi.Audio.Get((ulong)MainVm.VkApi.UserId.Value));
+
+                            if (userAudios.FirstOrDefault(a => a.Title == audio.Title && a.Artist == audio.Artist) == null && audio.OwnerId!=null)
+                                MainVm.VkApi.Audio.Add((ulong) audioId, audio.OwnerId.Value);
+                            else
                             {
-                                MainVm.SelectedAudio.VkAudio = new Audio();
+                                var materialSettings = new MetroDialogSettings
+                                {
+                                    CustomResourceDictionary =
+                                        new ResourceDictionary()
+                                        {
+                                            Source =
+                                                new Uri(
+                                                    "pack://application:,,,/MaterialDesignThemes.MahApps;component/Themes/MaterialDesignTheme.MahApps.Dialogs.xaml")
+                                        },
+                                    SuppressDefaultResources = true,
+                                    AnimateShow=true,
+                                    ColorScheme= MetroDialogColorScheme.Accented
+                                };
+
+                                await DialogCoordinator.Instance.ShowMessageAsync(this,"Ошибка", "Данная аудиозапись уже присуцтвует в вашем списке", MessageDialogStyle.Affirmative, materialSettings);
                             }
                         }
-
-
-                        MainVm.VkApi.Audio.Delete((ulong)audioId, audio.OwnerId.Value);
-                        Audios.Remove(audio);
-
-                        RaisePropertyChanged(AudiosPropertyName);
                     }));
             }
         }
-
-
 
         public override void ChangeListPlayButtonVisibility(object listItem, Visibility visibility)
         {
@@ -149,6 +151,12 @@ namespace WPFMusicPlayer.ViewModel
 
             VisibleItem = (ToggleButton)dataTemplate.FindName("PausePlayButton", contentPresenter);
             VisibleItem.Visibility = Visibility.Visible;
+        }
+
+        public override void UpdateAudioList()
+        {
+            if (MainVm.VkApi.UserId != null)
+                Audios = new ObservableCollection<Audio>(MainVm.VkApi.Audio.GetRecommendations((ulong)MainVm.VkApi.UserId.Value));
         }
     }
 }
