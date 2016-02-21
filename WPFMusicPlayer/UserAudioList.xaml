@@ -8,6 +8,7 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:wpfMusic="clr-namespace:WPFMusicPlayer"
+             FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
              d:DesignHeight="300"
              d:DesignWidth="300"
              mc:Ignorable="d">
@@ -17,6 +18,7 @@
     </UserControl.DataContext>
 
     <ListView x:Name="AudiosList"
+              BorderThickness="0"
               ItemsSource="{Binding Audios}"
               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
               ScrollViewer.VerticalScrollBarVisibility="Hidden">
@@ -45,7 +47,7 @@
                                   DockPanel.Dock="Left"
                                   IsChecked="{Binding RelativeSource={RelativeSource FindAncestor,
                                                                                      AncestorType={x:Type wpfMusic:UserAudioList}},
-                                                      Path=DataContext.MainVm.SelectedAudio.IsPlaying,
+                                                      Path=DataContext.MainVm.MePlayer.IsPlaying,
                                                       Mode=TwoWay}"
                                   IsEnabled="False"
                                   Visibility="Collapsed">

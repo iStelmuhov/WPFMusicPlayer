@@ -31,7 +31,7 @@
 
     <Grid x:Name="Root">
         <Grid.RowDefinitions>
-            <RowDefinition Height="50" />
+            <RowDefinition Height="60" />
             <RowDefinition Height="9*" />
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
@@ -39,11 +39,7 @@
                 <ColumnDefinition Width="250" />
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
-            <ToggleButton Grid.Row="0"
-                          Grid.Column="0"
-                          Command="{Binding MyCommand}"
-                          CommandParameter="{Binding RelativeSource={RelativeSource Self},
-                                                     Path=IsChecked}" />
+            <wpfMusicPlayer:UserProfiler Grid.Row="0" Grid.Column="0" />
             <TextBlock Grid.Row="0"
                        Grid.Column="1"
                        Margin="10,10,0,5"
@@ -78,7 +74,7 @@
                 </TabItem>
                 <TabItem x:Name="CurrentListItem"
                          Width="150"
-                         Content="{Binding SelectedAudio.UsedList}"
+                         Content="{Binding MePlayer.UsedList}"
                          Header="Текущий плейлист" />
                 <TabItem x:Name="RecommendationsListItem"
                          Width="150"
@@ -93,28 +89,28 @@
               HorizontalAlignment="Left"
               VerticalAlignment="Bottom"
               Background="{DynamicResource PrimaryHueDarkBrush}"
-              IsEnabled="{Binding SelectedAudio.VkAudio,
+              IsEnabled="{Binding MePlayer.VkAudio,
                                   Converter={StaticResource NullBooleanConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="2*" />
-                <RowDefinition Height="5*" />
+                <RowDefinition Height="7*" />
                 <RowDefinition Height="2*" />
                 <RowDefinition Height="2*" />
-                <RowDefinition Height="3*" />
+                <RowDefinition Height="2.5*" />
                 <RowDefinition Height="2*" />
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0">
                 <TextBlock.Text>
                     <MultiBinding StringFormat="{}{0} — {1}">
-                        <Binding Path="SelectedAudio.VkAudio.Artist" />
-                        <Binding Path="SelectedAudio.VkAudio.Title" />
+                        <Binding Path="MePlayer.VkAudio.Artist" />
+                        <Binding Path="MePlayer.VkAudio.Title" />
                     </MultiBinding>
                 </TextBlock.Text>
             </TextBlock>
             <Image Grid.Row="1"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
-                   Source="{Binding SelectedAudio.VkAudio}"
+                   Source="{Binding MePlayer.Cover.Image}"
                    Stretch="Fill" />
             <StackPanel Grid.Row="2"
                         HorizontalAlignment="Center"
@@ -129,7 +125,6 @@
                         IsMoveToPointEnabled="True"
                         Maximum="100"
                         Minimum="0">
-
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
                             <command:EventToCommand Command="{Binding TimeSliderLeftButtonDown, Mode=OneWay}" />
@@ -162,7 +157,7 @@
                         Minimum="0"
                         SmallChange="0.01"
                         TickFrequency="-5"
-                        Value="{Binding SelectedAudio.Player.Volume}" />
+                        Value="{Binding MePlayer.Player.Volume}" />
                 <materialDesign:PackIcon Width="30"
                                          Height="30"
                                          VerticalAlignment="Center"
@@ -173,30 +168,30 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Orientation="Horizontal">
-                <Button Width="42"
-                        Height="42"
+                <Button Width="36"
+                        Height="36"
                         Margin="0,0,35,0"
                         Background="Transparent"
                         Command="{Binding PreviewAudioTrack}"
                         Style="{DynamicResource MaterialDesignFloatingActionDarkButton}">
-                    <materialDesign:PackIcon Width="42"
-                                             Height="42"
+                    <materialDesign:PackIcon Width="36"
+                                             Height="36"
                                              Kind="SkipPrevious" />
                 </Button>
-                <ToggleButton Width="42"
-                              Height="42"
+                <ToggleButton Width="36"
+                              Height="36"
                               Margin="0,0,35,0"
-                              Command="{Binding SelectedAudio.PlayPause}"
+                              Command="{Binding MePlayer.PlayPause}"
                               CommandParameter="{Binding RelativeSource={RelativeSource Self},
                                                          Path=IsChecked}"
-                              IsChecked="{Binding SelectedAudio.IsPlaying}">
+                              IsChecked="{Binding MePlayer.IsPlaying}">
                     <ToggleButton.Style>
                         <Style TargetType="{x:Type ToggleButton}">
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type ToggleButton}">
                                         <Grid>
-                                            <Viewbox Width="40" Height="40">
+                                            <Viewbox Width="36" Height="36">
                                                 <Canvas Width="24" Height="24">
                                                     <Ellipse x:Name="PlayButtonEllipse"
                                                              Width="24"
@@ -232,32 +227,32 @@
                         </Style>
                     </ToggleButton.Style>
                 </ToggleButton>
-                <Button Width="42"
-                        Height="42"
+                <Button Width="36"
+                        Height="36"
                         Background="Transparent"
                         Command="{Binding NextAudioTrack}"
                         Style="{DynamicResource MaterialDesignFloatingActionDarkButton}">
-                    <materialDesign:PackIcon Width="42"
-                                             Height="42"
+                    <materialDesign:PackIcon Width="36"
+                                             Height="36"
                                              Kind="SkipNext" />
                 </Button>
             </StackPanel>
             <StackPanel Grid.Row="5"
                         HorizontalAlignment="Center"
                         Orientation="Horizontal">
-                <ToggleButton Margin="0,0,35,0"
+                <ToggleButton Margin="0,0,35,10"
                               IsChecked="{Binding Shuffle,
                                                   Mode=TwoWay}"
-                              Style="{DynamicResource MaterialDesignFlatToggleButton}">
-                    <materialDesign:PackIcon Width="19"
-                                             Height="19"
+                              Style="{DynamicResource MaterialDesignFlatToggleButton}" Height="Auto" Width="28">
+                    <materialDesign:PackIcon Width="15"
+                                             Height="15"
                                              Foreground="{DynamicResource AccentColorBrush4}"
                                              Kind="ShuffleVariant" />
                 </ToggleButton>
 
-                <ToggleButton IsChecked="{Binding RepeatAudio, Mode=TwoWay}" Style="{DynamicResource MaterialDesignFlatToggleButton}">
-                    <materialDesign:PackIcon Width="19"
-                                             Height="19"
+                <ToggleButton IsChecked="{Binding RepeatAudio, Mode=TwoWay}" Style="{DynamicResource MaterialDesignFlatToggleButton}" Height="Auto" Margin="0,0,0,10" Width="28">
+                    <materialDesign:PackIcon Width="15"
+                                             Height="15"
                                              Foreground="{DynamicResource AccentColorBrush3}"
                                              Kind="Repeat" />
                 </ToggleButton>

@@ -104,14 +104,42 @@ namespace WPFMusicPlayer.Classes
         }
 
 
+
+        public const string CoverPropertyName = "Cover";
+        private WebImage _cover;
+        public WebImage Cover
+        {
+            get
+            {
+                return _cover;
+            }
+
+            set
+            {
+                if (_cover == value)
+                {
+                    return;
+                }
+
+                _cover = value;
+                RaisePropertyChanged(CoverPropertyName);
+            }
+        }
+
         public bool UserIsDraggingSlider { get; set; }
 
         public AudioFile():base()
         {
             Player = new MediaPlayer();
             IsPlaying = false;
+
+            VkAudioChanged += AudioFile_VkAudioChanged;
         }
 
+        private async void AudioFile_VkAudioChanged(object sender, EventArgs e)
+        {
+            Cover = await WebImage.GetAlbumCoverFromSpotify(VkAudio.Artist, VkAudio.Title);
+        }
 
         public void PlayAudio()
         {

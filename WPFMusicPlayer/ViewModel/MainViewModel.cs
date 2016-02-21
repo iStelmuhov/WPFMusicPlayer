@@ -22,6 +22,7 @@ namespace WPFMusicPlayer.ViewModel
     /// See http://www.galasoft.ch/mvvm
     /// </para>
     /// </summary>
+    /// 
     public class MainViewModel : ViewModelBase
     {
         public const ulong Appid = 5233775;
@@ -32,25 +33,25 @@ namespace WPFMusicPlayer.ViewModel
 
         private DispatcherTimer _timer;
 
-        public const string SelectedAudioPropertyName = "SelectedAudio";
-        private AudioFile _selectedAudioFile = new AudioFile();
-        public AudioFile SelectedAudio
+        public const string MePlayerPropertyName = "MePlayer";
+        private AudioFile _mePlayerFile = new AudioFile();
+        public AudioFile MePlayer
         {
             get
             {
-                return _selectedAudioFile;
+                return _mePlayerFile;
             }
 
             set
             {
-                if (_selectedAudioFile == value)
+                if (_mePlayerFile == value)
                 {
                     return;
                 }
 
-                _selectedAudioFile = value;
+                _mePlayerFile = value;
                 // ReSharper disable once ExplicitCallerInfoArgument
-                RaisePropertyChanged(SelectedAudioPropertyName);
+                RaisePropertyChanged(MePlayerPropertyName);
             }
         }
 
@@ -104,7 +105,12 @@ namespace WPFMusicPlayer.ViewModel
         {
             _autorizeAuthParams=new ApiAuthParams();
 
-            VkApi=new VkApi();
+
+            
+
+
+
+            VkApi =new VkApi();
 
             _autorizeAuthParams.Login = "shyrovec@rambler.ru";
             _autorizeAuthParams.Password = "Stelmuhov";
@@ -117,8 +123,8 @@ namespace WPFMusicPlayer.ViewModel
             _timer.Tick += _timer_Tick;
            
 
-            SelectedAudio.Player.MediaOpened += Player_MediaOpened;
-            SelectedAudio.Player.MediaEnded += Player_MediaEnded;
+            MePlayer.Player.MediaOpened += Player_MediaOpened;
+            MePlayer.Player.MediaEnded += Player_MediaEnded;
         }
 
 
@@ -128,11 +134,9 @@ namespace WPFMusicPlayer.ViewModel
             get
             {
                 return _myCommand
-                    ?? (_myCommand = new RelayCommand<bool>(
-                    isDark =>
+                    ?? (_myCommand = new RelayCommand<bool>(isDark =>
                     {
                         int a = 2;
-
 
                         new PaletteHelper().SetLightDark(isDark);
                     }));
@@ -148,8 +152,8 @@ namespace WPFMusicPlayer.ViewModel
                     ?? (_timeSliderLeftButtonDown = new RelayCommand(
                     () =>
                     {
-                        SelectedAudio.UserIsDraggingSlider = true;
-                        SelectedAudio.PauseAudio();
+                        MePlayer.UserIsDraggingSlider = true;
+                        MePlayer.PauseAudio();
                         
                     }));
             }
@@ -164,9 +168,9 @@ namespace WPFMusicPlayer.ViewModel
                     ?? (_timeSliderLeftButtonUp = new RelayCommand(
                     () =>
                     {
-                        SelectedAudio.PlayAudio();
-                        SelectedAudio.UserIsDraggingSlider = false;
-                        SelectedAudio.Player.Position =
+                        MePlayer.PlayAudio();
+                        MePlayer.UserIsDraggingSlider = false;
+                        MePlayer.Player.Position =
                         TimeSpan.FromSeconds(((MainWindow)Application.Current.MainWindow).TimeSlider.Value);
                     }));
             }
@@ -181,7 +185,7 @@ namespace WPFMusicPlayer.ViewModel
                     ?? (_timeSliderValueChanged = new RelayCommand(
                     () =>
                     {
-                        if (SelectedAudio.UserIsDraggingSlider)
+                        if (MePlayer.UserIsDraggingSlider)
                         {
                             ((MainWindow) Application.Current.MainWindow).PlaybackTime.Text =
                                 TimeSpan.FromSeconds(((MainWindow) Application.Current.MainWindow).TimeSlider.Value)
@@ -195,17 +199,17 @@ namespace WPFMusicPlayer.ViewModel
         {
             _timer.Stop();
 
-            RaisePropertyChanged(() => SelectedAudio.Player.HasAudio);
+            RaisePropertyChanged(() => MePlayer.Player.HasAudio);
 
             if (RepeatAudio)
             {
-                SelectedAudio.StopAudio();
-                SelectedAudio.PlayAudio();
+                MePlayer.StopAudio();
+                MePlayer.PlayAudio();
                 Player_MediaOpened(this,EventArgs.Empty);
             }
             else
             {
-                SelectedAudio.NextAudio(Shuffle);
+                MePlayer.NextAudio(Shuffle);
             }
         }
 
@@ -214,21 +218,21 @@ namespace WPFMusicPlayer.ViewModel
             _timer.Start();
 
             ((MainWindow)Application.Current.MainWindow).TimeSlider.Maximum =
-                SelectedAudio.Player.NaturalDuration.TimeSpan.TotalSeconds;
+                MePlayer.Player.NaturalDuration.TimeSpan.TotalSeconds;
 
             ((MainWindow) Application.Current.MainWindow).TotalPlayTime.Text =
-                SelectedAudio.Player.NaturalDuration.TimeSpan.ToString(@"mm\:ss");
+                MePlayer.Player.NaturalDuration.TimeSpan.ToString(@"mm\:ss");
 
         }
 
         private void _timer_Tick(object sender, EventArgs e)
         {
-            if (SelectedAudio.Player.Source != null && SelectedAudio.Player.NaturalDuration.HasTimeSpan && !SelectedAudio.UserIsDraggingSlider)
+            if (MePlayer.Player.Source != null && MePlayer.Player.NaturalDuration.HasTimeSpan && !MePlayer.UserIsDraggingSlider)
             {
                 ((MainWindow)Application.Current.MainWindow).TimeSlider.Value =
-                    SelectedAudio.Player.Position.TotalSeconds;
+                    MePlayer.Player.Position.TotalSeconds;
 
-                ((MainWindow)Application.Current.MainWindow).PlaybackTime.Text= SelectedAudio.Player.Position.ToString(@"mm\:ss");
+                ((MainWindow)Application.Current.MainWindow).PlaybackTime.Text= MePlayer.Player.Position.ToString(@"mm\:ss");
             }
         }
 
@@ -243,7 +247,8 @@ namespace WPFMusicPlayer.ViewModel
                     {
                         try
                         {
-                            SelectedAudio.PreviewAudio(Shuffle);
+                            MePlayer.PreviewAudio(Shuffle);
+                            MePlayer.PlayAudio();
                         }
                         catch (NullReferenceException) {}
                        
@@ -262,7 +267,8 @@ namespace WPFMusicPlayer.ViewModel
                     {
                         try
                         {
-                           SelectedAudio.NextAudio(Shuffle);
+                           MePlayer.NextAudio(Shuffle);
+                            MePlayer.PlayAudio();
                         }
                         catch (NullReferenceException){}
 

@@ -107,11 +107,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Classes\PxApiData.cs" />
+    <Compile Include="Classes\WebImage.cs" />
     <Compile Include="Classes\AudioFile.cs" />
     <Compile Include="Classes\AudioListViewModel.cs" />
     <Compile Include="Classes\InverseBooleanConverter.cs" />
     <Compile Include="Classes\NullBooleanConverter.cs" />
     <Compile Include="Classes\SelectedAudioControlConventer.cs" />
+    <Compile Include="Classes\SpotifyApiData.cs" />
     <Compile Include="Enums\Picture.cs" />
     <Compile Include="RecommendationsAudioList.xaml.cs">
       <DependentUpon>RecommendationsAudioList.xaml</DependentUpon>
@@ -119,9 +122,13 @@
     <Compile Include="UserAudioList.xaml.cs">
       <DependentUpon>UserAudioList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserProfiler.xaml.cs">
+      <DependentUpon>UserProfiler.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\RecommendationsAudioListViewModel.cs" />
     <Compile Include="ViewModel\UserAudioListViewModel.cs" />
+    <Compile Include="ViewModel\UserProfilerViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -140,6 +147,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserAudioList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserProfiler.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -174,6 +185,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Readme.MvvmlightSnippet.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

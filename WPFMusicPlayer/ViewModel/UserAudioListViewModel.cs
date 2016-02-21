@@ -16,21 +16,21 @@ namespace WPFMusicPlayer.ViewModel
         {
             if (MainVm.VkApi.UserId != null)
                 Audios = new ObservableCollection<Audio>(MainVm.VkApi.Audio.Get((ulong)MainVm.VkApi.UserId.Value));
-            MainVm.SelectedAudio.VkAudioChanged += SelectedAudio_VkAudioChanged;
+            MainVm.MePlayer.VkAudioChanged += SelectedAudio_VkAudioChanged;
         }
 
         private void PlayNewAudioFromList()
         {
-            MainVm.SelectedAudio.UsedList = ((MainWindow)Application.Current.MainWindow).UserListItem.Content as UserAudioList;
+            MainVm.MePlayer.UsedList = ((MainWindow)Application.Current.MainWindow).UserListItem.Content as UserAudioList;
 
             SwitchListPlayButtonVisibility(((UserAudioList)((MainWindow)Application.Current.MainWindow).UserListItem.Content).AudiosList.SelectedItem);
 //            ChangeListPlayButtonVisibility(MainVm.SelectedAudio.VkAudio, Visibility.Collapsed);
 //            ChangeListPlayButtonVisibility(((UserAudioList)((MainWindow)Application.Current.MainWindow).UserListItem.Content).AudiosList.SelectedItem, Visibility.Visible);
 
-            MainVm.SelectedAudio.VkAudio = ((UserAudioList)((MainWindow)Application.Current.MainWindow).UserListItem.Content).AudiosList.SelectedItem as Audio;
+            MainVm.MePlayer.VkAudio = ((UserAudioList)((MainWindow)Application.Current.MainWindow).UserListItem.Content).AudiosList.SelectedItem as Audio;
 
-            if(MainVm.SelectedAudio.VkAudio!=null)
-                MainVm.SelectedAudio.PlayAudio();
+            if(MainVm.MePlayer.VkAudio!=null)
+                MainVm.MePlayer.PlayAudio();
         }
 
         private RelayCommand _listViewItemChangedCommand;
@@ -58,12 +58,12 @@ namespace WPFMusicPlayer.ViewModel
                     ?? (_listViewItemClick = new RelayCommand(
                     () =>
                     {
-                        MainVm.SelectedAudio.UsedList = ((MainWindow)Application.Current.MainWindow).UserListItem.Content as UserControl;
+                        MainVm.MePlayer.UsedList = ((MainWindow)Application.Current.MainWindow).UserListItem.Content as UserControl;
 
-                        if (MainVm.SelectedAudio.VkAudio == null)
+                        if (MainVm.MePlayer.VkAudio == null)
                             return;
 
-                        if (MainVm.SelectedAudio.VkAudio !=
+                        if (MainVm.MePlayer.VkAudio !=
                             ((UserAudioList) ((MainWindow) Application.Current.MainWindow).UserListItem.Content)
                                 .AudiosList.SelectedItem)
                         {
@@ -71,19 +71,19 @@ namespace WPFMusicPlayer.ViewModel
                             return;
                         }
 
-                        if (MainVm.SelectedAudio.IsPlaying)
-                            MainVm.SelectedAudio.PauseAudio();
+                        if (MainVm.MePlayer.IsPlaying)
+                            MainVm.MePlayer.PauseAudio();
                         else
-                            MainVm.SelectedAudio.PlayAudio();
+                            MainVm.MePlayer.PlayAudio();
                     }));
             }
         }
   
         private void SelectedAudio_VkAudioChanged(object sender, EventArgs e)
         {
-            if (MainVm.SelectedAudio.UsedList.GetType() == typeof (UserAudioList))
+            if (MainVm.MePlayer.UsedList.GetType() == typeof (UserAudioList))
             {
-                ((UserAudioList)MainVm.SelectedAudio.UsedList).AudiosList.SelectedItem = MainVm.SelectedAudio.VkAudio;
+                ((UserAudioList)MainVm.MePlayer.UsedList).AudiosList.SelectedItem = MainVm.MePlayer.VkAudio;
             }
             else if (((RecommendationsAudioList)((MainWindow)Application.Current.MainWindow).RecommendationsListItem.Content).AudiosList.SelectedItem != null)
             {
@@ -102,11 +102,11 @@ namespace WPFMusicPlayer.ViewModel
                     {
                         var audio = Audios.First(a => a.Id == audioId);
 
-                        if (audio == MainVm.SelectedAudio.VkAudio)
+                        if (audio == MainVm.MePlayer.VkAudio)
                         {
-                            if (!MainVm.SelectedAudio.NextAudio() && !MainVm.SelectedAudio.PreviewAudio())
+                            if (!MainVm.MePlayer.NextAudio() && !MainVm.MePlayer.PreviewAudio())
                             {
-                                MainVm.SelectedAudio.VkAudio=new Audio();
+                                MainVm.MePlayer.VkAudio=new Audio();
                             }
                         }
 
