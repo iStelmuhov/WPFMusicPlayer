@@ -104,5 +104,23 @@ namespace WPFMusicPlayer.ViewModel
             }
         }
 
+        private RelayCommand _openSettingsFlyoutCommand;
+
+        /// <summary>
+        /// Gets the OpenSettingsFlyout.
+        /// </summary>
+        public RelayCommand OpenSettingsFlyout
+        {
+            get
+            {
+                return _openSettingsFlyoutCommand
+                    ?? (_openSettingsFlyoutCommand = new RelayCommand(
+                    () =>
+                    {
+                        ((MainWindow) Application.Current.MainWindow).LeftFlyout.IsOpen = true;
+                    }));
+            }
+        }
+
     }
 }

@@ -1,0 +1,283 @@
+﻿<metro:MetroWindow x:Class="WPFMusicPlayer.MainWindow"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:classes="clr-namespace:WPFMusicPlayer.Classes"
+                   xmlns:command="http://www.galasoft.ch/mvvmlight"
+                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                   xmlns:dockablz="clr-namespace:Dragablz.Dockablz;assembly=Dragablz"
+                   xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
+                   xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                   xmlns:local="clr-namespace:WPFMusicPlayer.ViewModel"
+                   xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                   xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+                   xmlns:views="clr-namespace:WPFMusicPlayer.Views"
+                   xmlns:wpfMusicPlayer="clr-namespace:WPFMusicPlayer"
+                   Title="VK Music Player"
+                   Width="1000"
+                   Height="600"
+                   Background="{DynamicResource MaterialDesignPaper}"
+                   FontFamily="{StaticResource DefaultFont}"
+                   GlowBrush="{DynamicResource AccentColorBrush}"
+                   TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+                   WindowTransitionsEnabled="False"
+                   mc:Ignorable="d">
+    <Window.DataContext>
+        <local:MainViewModel />
+    </Window.DataContext>
+
+    <Window.Resources>
+        <classes:NullBooleanConverter x:Key="NullBooleanConverter" />
+    </Window.Resources>
+
+    <Grid>
+        <Grid x:Name="Root">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60" />
+                <RowDefinition Height="9*" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <wpfMusicPlayer:UserProfiler Grid.Row="0" Grid.Column="0" />
+                <TextBlock Grid.Row="0"
+                           Grid.Column="1"
+                           Margin="10,10,0,5"
+                           HorizontalAlignment="Stretch"
+                           VerticalAlignment="Stretch"
+                           FontSize="24"
+                           Text="{Binding ElementName=MenuControl,
+                                          Path=SelectedItem.Header}" />
+            </Grid>
+            <dockablz:Layout Grid.Row="1">
+                <dragablz:TabablzControl x:Name="MenuControl"
+                                         Margin="0,-1,0,1"
+                                         Background="{Binding RelativeSource={RelativeSource FindAncestor,
+                                                                                             AncestorType=Window},
+                                                              Path=Background}"
+                                         BorderThickness="0"
+                                         FontSize="22"
+                                         TabStripPlacement="Left"
+                                         TextElement.Foreground="{Binding RelativeSource={RelativeSource FindAncestor,
+                                                                                                         AncestorType=Window},
+                                                                          Path=(TextElement.Foreground)}">
+                    <dragablz:TabablzControl.ItemContainerStyle>
+                        <Style BasedOn="{StaticResource MaterialDesignDragableTabItemVerticalStyle}" TargetType="{x:Type dragablz:DragablzItem}">
+                            <Setter Property="Width" Value="250" />
+                            <Setter Property="Height" Value="40" />
+                        </Style>
+                    </dragablz:TabablzControl.ItemContainerStyle>
+                    <TabItem x:Name="UserListItem"
+                             Width="150"
+                             Header="Мои аудиозаписи">
+                        <wpfMusicPlayer:UserAudioList />
+                    </TabItem>
+                    <TabItem x:Name="CurrentListItem"
+                             Width="150"
+                             Content="{Binding MePlayer.UsedList}"
+                             Header="Текущий плейлист" />
+                    <TabItem x:Name="RecommendationsListItem"
+                             Width="150"
+                             Header="Рекомендации">
+                        <wpfMusicPlayer:RecommendationsAudioList />
+                    </TabItem>
+                </dragablz:TabablzControl>
+            </dockablz:Layout>
+            <Grid x:Name="PlayerArea"
+                  Grid.Row="1"
+                  Width="250"
+                  Height="300"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Bottom"
+                  Background="{DynamicResource PrimaryHueDarkBrush}"
+                  IsEnabled="{Binding MePlayer.VkAudio,
+                                      Converter={StaticResource NullBooleanConverter}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="2*" />
+                    <RowDefinition Height="7*" />
+                    <RowDefinition Height="2*" />
+                    <RowDefinition Height="2*" />
+                    <RowDefinition Height="2.5*" />
+                    <RowDefinition Height="2*" />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0} — {1}">
+                            <Binding Path="MePlayer.VkAudio.Artist" />
+                            <Binding Path="MePlayer.VkAudio.Title" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <Image Grid.Row="1"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Source="{Binding MePlayer.Cover.Image}"
+                       Stretch="Fill" />
+                <StackPanel Grid.Row="2"
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+                    <TextBlock x:Name="PlaybackTime"
+                               Margin="0,0,5,0"
+                               VerticalAlignment="Center"
+                               Text="00:00" />
+                    <Slider x:Name="TimeSlider"
+                            Width="180"
+                            VerticalAlignment="Center"
+                            IsMoveToPointEnabled="True"
+                            Maximum="100"
+                            Minimum="0">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                <command:EventToCommand Command="{Binding TimeSliderLeftButtonDown, Mode=OneWay}" />
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="PreviewMouseLeftButtonUp">
+                                <command:EventToCommand Command="{Binding TimeSliderLeftButtonUp, Mode=OneWay}" />
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="ValueChanged">
+                                <command:EventToCommand Command="{Binding TimeSliderValueChanged, Mode=OneWay}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Slider>
+                    <TextBlock x:Name="TotalPlayTime"
+                               Margin="5,0,0,0"
+                               VerticalAlignment="Center"
+                               Text="00:00" />
+                </StackPanel>
+                <StackPanel Grid.Row="3"
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+                    <materialDesign:PackIcon Width="30"
+                                             Height="30"
+                                             VerticalAlignment="Center"
+                                             Foreground="{DynamicResource AccentSelectedColorBrush}"
+                                             Kind="VolumeMedium" />
+                    <Slider Width="180"
+                            VerticalAlignment="Center"
+                            LargeChange="0.1"
+                            Maximum="1"
+                            Minimum="0"
+                            SmallChange="0.01"
+                            TickFrequency="-5"
+                            Value="{Binding MePlayer.Player.Volume}" />
+                    <materialDesign:PackIcon Width="30"
+                                             Height="30"
+                                             VerticalAlignment="Center"
+                                             Foreground="{DynamicResource AccentSelectedColorBrush}"
+                                             Kind="VolumeHigh" />
+                </StackPanel>
+                <StackPanel Grid.Row="4"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                    <Button Width="36"
+                            Height="36"
+                            Margin="0,0,35,0"
+                            Background="Transparent"
+                            Command="{Binding PreviewAudioTrack}"
+                            Style="{DynamicResource MaterialDesignFloatingActionDarkButton}">
+                        <materialDesign:PackIcon Width="36"
+                                                 Height="36"
+                                                 Kind="SkipPrevious" />
+                    </Button>
+                    <ToggleButton Width="36"
+                                  Height="36"
+                                  Margin="0,0,35,0"
+                                  Command="{Binding MePlayer.PlayPause}"
+                                  CommandParameter="{Binding RelativeSource={RelativeSource Self},
+                                                             Path=IsChecked}"
+                                  IsChecked="{Binding MePlayer.IsPlaying}">
+                        <ToggleButton.Style>
+                            <Style TargetType="{x:Type ToggleButton}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                            <Grid>
+                                                <Viewbox Width="36" Height="36">
+                                                    <Canvas Width="24" Height="24">
+                                                        <Ellipse x:Name="PlayButtonEllipse"
+                                                                 Width="24"
+                                                                 Height="24"
+                                                                 Fill="Transparent"
+                                                                 Stroke="#10000000"
+                                                                 StrokeThickness="1" />
+                                                        <Path x:Name="PlayButton"
+                                                              Data="M8,5.14V19.14L19,12.14L8,5.14Z"
+                                                              Fill="{StaticResource AccentSelectedColorBrush}" />
+                                                    </Canvas>
+                                                </Viewbox>
+                                                <ContentPresenter />
+                                            </Grid>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsChecked" Value="True">
+                                                    <Setter TargetName="PlayButton" Property="Data" Value="M14,19.14H18V5.14H14M6,19.14H10V5.14H6V19.14Z" />
+                                                </Trigger>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="PlayButtonEllipse" Property="Effect">
+                                                        <Setter.Value>
+                                                            <DropShadowEffect BlurRadius="5"
+                                                                              Opacity="1"
+                                                                              ShadowDepth="3"
+                                                                              Color="Black" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ToggleButton.Style>
+                    </ToggleButton>
+                    <Button Width="36"
+                            Height="36"
+                            Background="Transparent"
+                            Command="{Binding NextAudioTrack}"
+                            Style="{DynamicResource MaterialDesignFloatingActionDarkButton}">
+                        <materialDesign:PackIcon Width="36"
+                                                 Height="36"
+                                                 Kind="SkipNext" />
+                    </Button>
+                </StackPanel>
+                <StackPanel Grid.Row="5"
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+                    <ToggleButton Width="28"
+                                  Height="Auto"
+                                  Margin="0,0,35,10"
+                                  IsChecked="{Binding Shuffle,
+                                                      Mode=TwoWay}"
+                                  Style="{DynamicResource MaterialDesignFlatToggleButton}">
+                        <materialDesign:PackIcon Width="15"
+                                                 Height="15"
+                                                 Foreground="{DynamicResource AccentColorBrush4}"
+                                                 Kind="ShuffleVariant" />
+                    </ToggleButton>
+
+                    <ToggleButton Width="28"
+                                  Height="Auto"
+                                  Margin="0,0,0,10"
+                                  IsChecked="{Binding RepeatAudio,
+                                                      Mode=TwoWay}"
+                                  Style="{DynamicResource MaterialDesignFlatToggleButton}">
+                        <materialDesign:PackIcon Width="15"
+                                                 Height="15"
+                                                 Foreground="{DynamicResource AccentColorBrush3}"
+                                                 Kind="Repeat" />
+                    </ToggleButton>
+                </StackPanel>
+            </Grid>
+        </Grid>
+        <metro:FlyoutsControl d:IsHidden="True">
+            <metro:Flyout x:Name="LeftFlyout"
+                          Width="{Binding ElementName=PlayerArea,
+                                          Path=ActualWidth}"
+                          Background="{DynamicResource PrimaryHueDarkBrush}"
+                          Header="Настройки"
+                          Position="Left">
+                <views:SettingsFlyout />
+            </metro:Flyout>
+        </metro:FlyoutsControl>
+    </Grid>
+</metro:MetroWindow>
