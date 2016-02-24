@@ -80,7 +80,7 @@
                     </Button>
                     <Button Width="24"
                             Height="24"
-                            Command="{Binding}"
+                            Command="{Binding SignOut}"
                             Style="{DynamicResource MaterialDesignFloatingActionDarkButton}">
                         <materialDesign:PackIcon Width="20"
                                                  Height="20"

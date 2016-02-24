@@ -40,10 +40,14 @@
 
         <ListView.ItemTemplate>
             <DataTemplate>
-                <DockPanel>
+                <DockPanel LastChildFill="True">
                     <ToggleButton x:Name="PausePlayButton"
                                   Width="42"
                                   Height="42"
+                                  Command="{Binding RelativeSource={RelativeSource FindAncestor,
+                                                                                   AncestorType={x:Type wpfMusic:UserAudioList}},
+                                                    Path=DataContext.ListViewItemClick,
+                                                    Mode=OneWay}"
                                   DockPanel.Dock="Left"
                                   IsChecked="{Binding RelativeSource={RelativeSource FindAncestor,
                                                                                      AncestorType={x:Type wpfMusic:UserAudioList}},
@@ -83,21 +87,7 @@
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </ToggleButton>
-                    <WrapPanel Orientation="Vertical">
-                        <TextBlock Margin="10,0,0,0"
-                                   FontSize="16"
-                                   Text="{Binding Title}" />
-                        <TextBlock Margin="10,0,0,0"
-                                   FontSize="10"
-                                   FontWeight="ExtraLight"
-                                   Text="{Binding Artist}" />
-                        <Rectangle Height="0" />
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                                <command:EventToCommand Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type wpfMusic:UserAudioList}}, Path=DataContext.ListViewItemClick, Mode=OneWay}" />
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </WrapPanel>
+
                     <Button HorizontalAlignment="Right"
                             VerticalAlignment="Center"
                             Command="{Binding RelativeSource={RelativeSource FindAncestor,
@@ -111,6 +101,27 @@
                                                  Height="24"
                                                  Kind="Close" />
                     </Button>
+                    <WrapPanel Orientation="Vertical">
+                        <TextBlock Margin="10,0,0,0"
+                                   FontSize="16"
+                                   Text="{Binding Title}" />
+                        <TextBlock Margin="10,0,0,0"
+                                   FontSize="10"
+                                   FontWeight="ExtraLight"
+                                   Text="{Binding Artist}" />
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                <command:EventToCommand Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type wpfMusic:UserAudioList}}, Path=DataContext.ListViewItemClick, Mode=OneWay}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </WrapPanel>
+                    <Rectangle Fill="Transparent">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                <command:EventToCommand Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type wpfMusic:UserAudioList}}, Path=DataContext.ListViewItemClick, Mode=OneWay}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Rectangle>
                 </DockPanel>
             </DataTemplate>
         </ListView.ItemTemplate>

@@ -14,9 +14,16 @@ namespace WPFMusicPlayer.ViewModel
     {
         public UserAudioListViewModel()
         {
+            
+            MainVm.AuthorizationSuccess += MainVm_AuthorizationSuccess;
+            MainVm.MePlayer.VkAudioChanged += SelectedAudio_VkAudioChanged;
+        }
+
+
+        private void MainVm_AuthorizationSuccess(object sender, EventArgs e)
+        {
             if (MainVm.VkApi.UserId != null)
                 Audios = new ObservableCollection<Audio>(MainVm.VkApi.Audio.Get((ulong)MainVm.VkApi.UserId.Value));
-            MainVm.MePlayer.VkAudioChanged += SelectedAudio_VkAudioChanged;
         }
 
         private void PlayNewAudioFromList()

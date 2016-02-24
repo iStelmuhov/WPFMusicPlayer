@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
+using MaterialDesignColors;
+using MaterialDesignThemes.Wpf;
 using VkNet.Enums.Filters;
 using WPFMusicPlayer.Classes;
+using WPFMusicPlayer.Views;
 using User = VkNet.Model.User;
 
 namespace WPFMusicPlayer.ViewModel
@@ -12,6 +16,7 @@ namespace WPFMusicPlayer.ViewModel
     {
         private string pxApiKey= "rEDd7OkHtWg6twlvw1fxyUTqLRXq2HVxVA1RVrQG";
 
+       
 
         public const string BackgroundImagePropertyName = "BackgroundImage";
         private WebImage _backgroundImage;
@@ -65,6 +70,8 @@ namespace WPFMusicPlayer.ViewModel
         {
             MainVm = ((MainViewModel)Application.Current.MainWindow.DataContext);
 
+           
+
             _currentPage = 1;
             _currentPhotoNumber = 1;
 
@@ -105,10 +112,6 @@ namespace WPFMusicPlayer.ViewModel
         }
 
         private RelayCommand _openSettingsFlyoutCommand;
-
-        /// <summary>
-        /// Gets the OpenSettingsFlyout.
-        /// </summary>
         public RelayCommand OpenSettingsFlyout
         {
             get
@@ -122,5 +125,23 @@ namespace WPFMusicPlayer.ViewModel
             }
         }
 
+        private RelayCommand _signOutCommand;
+
+        /// <summary>
+        /// Gets the SignOut.
+        /// </summary>
+        public RelayCommand SignOut
+        {
+            get
+            {
+                return _signOutCommand
+                    ?? (_signOutCommand = new RelayCommand(
+                    () =>
+                    {
+                        MainVm.OnAccountSignOut();
+                        MainVm.AuthorizationPanel=new AuthorizationControl();
+                    }));
+            }
+        }
     }
 }

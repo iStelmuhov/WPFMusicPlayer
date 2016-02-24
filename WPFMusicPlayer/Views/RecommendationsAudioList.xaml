@@ -33,10 +33,14 @@
         </i:Interaction.Triggers>
         <ListView.ItemTemplate>
             <DataTemplate>
-                <DockPanel>
+                <DockPanel LastChildFill="True">
                     <ToggleButton x:Name="PausePlayButton"
                                   Width="42"
                                   Height="42"
+                                  Command="{Binding RelativeSource={RelativeSource FindAncestor,
+                                                                                   AncestorType={x:Type wpfMusic:RecommendationsAudioList}},
+                                                    Path=DataContext.ListViewItemClick,
+                                                    Mode=OneWay}"
                                   DockPanel.Dock="Left"
                                   IsChecked="{Binding RelativeSource={RelativeSource FindAncestor,
                                                                                      AncestorType={x:Type wpfMusic:RecommendationsAudioList}},
@@ -84,7 +88,7 @@
                                    FontSize="10"
                                    FontWeight="ExtraLight"
                                    Text="{Binding Artist}" />
-                        <Rectangle Height="0" />
+
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <command:EventToCommand Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type wpfMusic:RecommendationsAudioList}}, Path=DataContext.ListViewItemClick, Mode=OneWay}" />
@@ -104,6 +108,13 @@
                                                  Height="24"
                                                  Kind="Plus" />
                     </Button>
+                    <Rectangle Fill="Transparent">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                <command:EventToCommand Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type wpfMusic:RecommendationsAudioList}}, Path=DataContext.ListViewItemClick, Mode=OneWay}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Rectangle>
                 </DockPanel>
             </DataTemplate>
         </ListView.ItemTemplate>

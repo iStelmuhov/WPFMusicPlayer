@@ -7,6 +7,7 @@ using MaterialDesignThemes.Wpf;
 using VkNet;
 using VkNet.Enums.Filters;
 using WPFMusicPlayer.Classes;
+using WPFMusicPlayer.Views;
 
 namespace WPFMusicPlayer.ViewModel
 {
@@ -25,10 +26,8 @@ namespace WPFMusicPlayer.ViewModel
     /// 
     public class MainViewModel : ViewModelBase
     {
-        public const ulong Appid = 5233775;
+        public  static ulong Appid = 5233775;
 
-        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
-        private readonly ApiAuthParams _autorizeAuthParams;
         public VkApi VkApi;
 
         private DispatcherTimer _timer;
@@ -101,32 +100,93 @@ namespace WPFMusicPlayer.ViewModel
             }
         }
 
+
+        public const string IsHostDialogOpenPropertyName = "IsHostDialogOpen";
+        private bool _osHostDialogOpen = false;
+        public bool IsHostDialogOpen
+        {
+            get
+            {
+                return _osHostDialogOpen;
+            }
+
+            set
+            {
+                if (_osHostDialogOpen == value)
+                {
+                    return;
+                }
+
+                _osHostDialogOpen = value;
+                RaisePropertyChanged(IsHostDialogOpenPropertyName);
+            }
+        }
+
+
+        public const string DialogHostContentPropertyName = "DialogHostContent";
+        private object _dialogHostContent;
+        public object DialogHostContent
+        {
+            get
+            {
+                return _dialogHostContent;
+            }
+
+            set
+            {
+                if (_dialogHostContent == value)
+                {
+                    return;
+                }
+
+                _dialogHostContent = value;
+                RaisePropertyChanged(DialogHostContentPropertyName);
+            }
+        }
+
+        public const string AuthorizationPanelPropertyName = "AuthorizationPanel";
+        private object _authorizationPanel = false;
+        public object AuthorizationPanel
+        {
+            get
+            {
+                return _authorizationPanel;
+            }
+
+            set
+            {
+                if (_authorizationPanel == value)
+                {
+                    return;
+                }
+
+                _authorizationPanel = value;
+                RaisePropertyChanged(AuthorizationPanelPropertyName);
+            }
+        }
+
         public MainViewModel()
         {
-            _autorizeAuthParams=new ApiAuthParams();
-
-
-            
-
-
-
+           
             VkApi =new VkApi();
-
-            _autorizeAuthParams.Login = "shyrovec@rambler.ru";
-            _autorizeAuthParams.Password = "Stelmuhov";
-            _autorizeAuthParams.ApplicationId = Appid;
-            _autorizeAuthParams.Settings = Settings.All;
-            
-             VkApi.Authorize(_autorizeAuthParams);
 
             _timer = new DispatcherTimer {Interval = TimeSpan.FromSeconds(1)};
             _timer.Tick += _timer_Tick;
            
+            AuthorizationPanel=new AuthorizationControl();
 
             MePlayer.Player.MediaOpened += Player_MediaOpened;
             MePlayer.Player.MediaEnded += Player_MediaEnded;
+            AccountSignOut += MainViewModel_AccountSignOut;
         }
 
+        private void MainViewModel_AccountSignOut(object sender, EventArgs e)
+        {
+            if(MePlayer.IsPlaying)
+                MePlayer.StopAudio();
+
+            MePlayer.VkAudio = null;
+        }
 
         private RelayCommand<bool> _myCommand;
         public RelayCommand<bool> MyCommand
@@ -274,6 +334,20 @@ namespace WPFMusicPlayer.ViewModel
 
                     }));
             }
+        }
+
+
+        public event EventHandler AuthorizationSuccess;
+        public virtual void OnAuthorizationSuccess()
+        {
+            AuthorizationSuccess?.Invoke(this, EventArgs.Empty);
+        }
+
+        public event EventHandler AccountSignOut;
+
+        public virtual void OnAccountSignOut()
+        {
+            AccountSignOut?.Invoke(this, EventArgs.Empty);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace WPFMusicPlayer.Classes
 {
     public abstract class AudioListViewModel:ViewModelBase
     {
-        public MainViewModel MainVm { get; set; }
+        public MainViewModel MainVm { get; }
 
         public const string AudiosPropertyName = "Audios";
         private ObservableCollection<Audio> _audios = new ObservableCollection<Audio>();
@@ -40,6 +40,12 @@ namespace WPFMusicPlayer.Classes
         protected AudioListViewModel()
         {
             MainVm = ((MainViewModel)Application.Current.MainWindow.DataContext);
+            MainVm.AccountSignOut += MainVm_AccountSignOut;
+        }
+
+        private void MainVm_AccountSignOut(object sender, System.EventArgs e)
+        {
+            Audios.Clear();
         }
 
         public static TChildItem FindVisualChild<TChildItem>(DependencyObject obj)

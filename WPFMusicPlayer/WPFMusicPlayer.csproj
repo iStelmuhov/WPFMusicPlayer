@@ -116,7 +116,15 @@
     <Compile Include="Classes\SelectedAudioControlConventer.cs" />
     <Compile Include="Classes\SpotifyApiData.cs" />
     <Compile Include="Enums\Picture.cs" />
+    <Compile Include="ViewModel\AuthorizationControlViewModel.cs" />
+    <Compile Include="ViewModel\AuthorizationDialogViewModel.cs" />
+    <Compile Include="Views\AuthorizationDialog.xaml.cs">
+      <DependentUpon>AuthorizationDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModel\SettingsFlyoutViewModel.cs" />
+    <Compile Include="Views\AuthorizationControl.xaml.cs">
+      <DependentUpon>AuthorizationControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\RecommendationsAudioList.xaml.cs">
       <DependentUpon>RecommendationsAudioList.xaml</DependentUpon>
     </Compile>
@@ -134,6 +142,14 @@
     <Compile Include="ViewModel\UserAudioListViewModel.cs" />
     <Compile Include="ViewModel\UserProfilerViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Page Include="Views\AuthorizationDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AuthorizationControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

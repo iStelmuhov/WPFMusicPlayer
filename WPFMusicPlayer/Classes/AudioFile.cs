@@ -103,8 +103,6 @@ namespace WPFMusicPlayer.Classes
             }
         }
 
-
-
         public const string CoverPropertyName = "Cover";
         private WebImage _cover;
         public WebImage Cover
@@ -128,7 +126,7 @@ namespace WPFMusicPlayer.Classes
 
         public bool UserIsDraggingSlider { get; set; }
 
-        public AudioFile():base()
+        public AudioFile()
         {
             Player = new MediaPlayer();
             IsPlaying = false;
@@ -138,7 +136,10 @@ namespace WPFMusicPlayer.Classes
 
         private async void AudioFile_VkAudioChanged(object sender, EventArgs e)
         {
-            Cover = await WebImage.GetAlbumCoverFromSpotify(VkAudio.Artist, VkAudio.Title);
+            if(VkAudio!=null)
+                Cover = await WebImage.GetAlbumCoverFromSpotify(VkAudio.Artist, VkAudio.Title);
+            else
+                Cover = null;
         }
 
         public void PlayAudio()
@@ -251,7 +252,6 @@ namespace WPFMusicPlayer.Classes
         }
 
         public event EventHandler VkAudioChanged;
-
         private void OnVkAudioChanged()
         {
             VkAudioChanged?.Invoke(this, EventArgs.Empty);
