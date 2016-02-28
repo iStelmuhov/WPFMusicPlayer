@@ -35,8 +35,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Dragablz, Version=0.0.3.155, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dragablz.0.0.3.155\lib\net45\Dragablz.dll</HintPath>
+    <Reference Include="Dragablz, Version=0.0.3.157, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dragablz.0.0.3.157\lib\net45\Dragablz.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="GalaSoft.MvvmLight, Version=5.2.0.37222, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
@@ -107,6 +107,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Classes\ProgramSettings.cs" />
     <Compile Include="Classes\PxApiData.cs" />
     <Compile Include="Classes\WebImage.cs" />
     <Compile Include="Classes\AudioFile.cs" />
@@ -116,8 +117,12 @@
     <Compile Include="Classes\SelectedAudioControlConventer.cs" />
     <Compile Include="Classes\SpotifyApiData.cs" />
     <Compile Include="Enums\Picture.cs" />
+    <Compile Include="ViewModel\AudioSearchViewModel.cs" />
     <Compile Include="ViewModel\AuthorizationControlViewModel.cs" />
     <Compile Include="ViewModel\AuthorizationDialogViewModel.cs" />
+    <Compile Include="Views\AudioSearch.xaml.cs">
+      <DependentUpon>AudioSearch.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\AuthorizationDialog.xaml.cs">
       <DependentUpon>AuthorizationDialog.xaml</DependentUpon>
     </Compile>
@@ -142,6 +147,10 @@
     <Compile Include="ViewModel\UserAudioListViewModel.cs" />
     <Compile Include="ViewModel\UserProfilerViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Page Include="Views\AudioSearch.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\AuthorizationDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -17,14 +18,7 @@ namespace WPFMusicPlayer.ViewModel
 
         public RecommendationsAudioListViewModel()
         {          
-            MainVm.AuthorizationSuccess += MainVm_AuthorizationSuccess;
             MainVm.MePlayer.VkAudioChanged += SelectedAudio_VkAudioChanged;
-        }
-
-        private void MainVm_AuthorizationSuccess(object sender, EventArgs e)
-        {
-            if (MainVm.VkApi.UserId != null)
-                Audios = new ObservableCollection<Audio>(MainVm.VkApi.Audio.GetRecommendations((ulong)MainVm.VkApi.UserId.Value));
         }
 
         private void PlayNewAudioFromList()
@@ -115,6 +109,7 @@ namespace WPFMusicPlayer.ViewModel
                                         },
                                     SuppressDefaultResources = true,
                                     AnimateShow=true,
+                                    AnimateHide = true,
                                     ColorScheme= MetroDialogColorScheme.Accented
                                 };
 

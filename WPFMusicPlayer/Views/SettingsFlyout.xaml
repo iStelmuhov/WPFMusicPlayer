@@ -105,7 +105,8 @@
             <ToggleButton Margin="8 0 16 0"
                           Command="{Binding ChangeLightDarkTheme}"
                           CommandParameter="{Binding RelativeSource={RelativeSource Self},
-                                                     Path=IsChecked}" />
+                                                     Path=IsChecked}"
+                          IsChecked="{Binding MainVm.Settings.IsDark}" />
             <TextBlock VerticalAlignment="Center">Тёмная</TextBlock>
         </StackPanel>
         <Expander Grid.Row="1"

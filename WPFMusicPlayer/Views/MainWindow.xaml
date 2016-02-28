@@ -26,6 +26,15 @@
         <local:MainViewModel />
     </Window.DataContext>
 
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closing">
+            <command:EventToCommand Command="{Binding WindowClosing}" />
+        </i:EventTrigger>
+        <i:EventTrigger EventName="Loaded">
+            <command:EventToCommand Command="{Binding WindowLoaded}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
     <Window.Resources>
         <classes:NullBooleanConverter x:Key="NullBooleanConverter" />
     </Window.Resources>
@@ -88,6 +97,11 @@
                                  Width="150"
                                  Header="Рекомендации">
                             <wpfMusicPlayer:RecommendationsAudioList />
+                        </TabItem>
+                        <TabItem x:Name="AudioSearchListItem"
+                                 Width="150"
+                                 Header="Поиск">
+                            <views:AudioSearch />
                         </TabItem>
                     </dragablz:TabablzControl>
                 </dockablz:Layout>

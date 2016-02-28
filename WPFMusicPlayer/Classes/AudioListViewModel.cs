@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -41,11 +43,19 @@ namespace WPFMusicPlayer.Classes
         {
             MainVm = ((MainViewModel)Application.Current.MainWindow.DataContext);
             MainVm.AccountSignOut += MainVm_AccountSignOut;
+            MainVm.AuthorizationSuccess += MainVm_AuthorizationSuccess;
+        }
+
+        private void MainVm_AuthorizationSuccess(object sender, System.EventArgs e)
+        {
+            Task loadAuios = new Task(UpdateAudioList);
+            loadAuios.Start();
         }
 
         private void MainVm_AccountSignOut(object sender, System.EventArgs e)
         {
             Audios.Clear();
+            GC.Collect(2,GCCollectionMode.Optimized);
         }
 
         public static TChildItem FindVisualChild<TChildItem>(DependencyObject obj)
@@ -66,13 +76,10 @@ where TChildItem : DependencyObject
             return null;
         }
 
-        public virtual void ChangeListPlayButtonVisibility(object listItem, Visibility visibility)
-        {}
+        public abstract void ChangeListPlayButtonVisibility(object listItem, Visibility visibility);
 
-        public virtual void SwitchListPlayButtonVisibility(object listItem)
-        { }
+        public abstract void SwitchListPlayButtonVisibility(object listItem);
 
-        public virtual void UpdateAudioList()
-        {}
+        public abstract void UpdateAudioList();
     }
 }

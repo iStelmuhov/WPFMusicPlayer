@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -15,15 +16,7 @@ namespace WPFMusicPlayer.ViewModel
         public UserAudioListViewModel()
         {
             
-            MainVm.AuthorizationSuccess += MainVm_AuthorizationSuccess;
             MainVm.MePlayer.VkAudioChanged += SelectedAudio_VkAudioChanged;
-        }
-
-
-        private void MainVm_AuthorizationSuccess(object sender, EventArgs e)
-        {
-            if (MainVm.VkApi.UserId != null)
-                Audios = new ObservableCollection<Audio>(MainVm.VkApi.Audio.Get((ulong)MainVm.VkApi.UserId.Value));
         }
 
         private void PlayNewAudioFromList()
@@ -31,9 +24,6 @@ namespace WPFMusicPlayer.ViewModel
             MainVm.MePlayer.UsedList = ((MainWindow)Application.Current.MainWindow).UserListItem.Content as UserAudioList;
 
             SwitchListPlayButtonVisibility(((UserAudioList)((MainWindow)Application.Current.MainWindow).UserListItem.Content).AudiosList.SelectedItem);
-//            ChangeListPlayButtonVisibility(MainVm.SelectedAudio.VkAudio, Visibility.Collapsed);
-//            ChangeListPlayButtonVisibility(((UserAudioList)((MainWindow)Application.Current.MainWindow).UserListItem.Content).AudiosList.SelectedItem, Visibility.Visible);
-
             MainVm.MePlayer.VkAudio = ((UserAudioList)((MainWindow)Application.Current.MainWindow).UserListItem.Content).AudiosList.SelectedItem as Audio;
 
             if(MainVm.MePlayer.VkAudio!=null)

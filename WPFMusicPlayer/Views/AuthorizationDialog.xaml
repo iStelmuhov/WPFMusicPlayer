@@ -51,7 +51,8 @@
                     Style="{DynamicResource MaterialDesignFlatButton}" />
             <CheckBox Margin="8,0,0,0"
                       VerticalAlignment="Center"
-                      Content="Запомнить пароль" />
+                      Content="Запомнить пароль"
+                      IsChecked="{Binding RememberData}" />
         </StackPanel>
 
     </Grid>

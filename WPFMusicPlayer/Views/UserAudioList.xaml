@@ -12,7 +12,6 @@
              d:DesignHeight="300"
              d:DesignWidth="300"
              mc:Ignorable="d">
-
     <UserControl.DataContext>
         <local:UserAudioListViewModel />
     </UserControl.DataContext>
@@ -22,6 +21,10 @@
               ItemsSource="{Binding Audios}"
               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
               ScrollViewer.VerticalScrollBarVisibility="Hidden">
+        <ListView.Resources>
+            <SolidColorBrush x:Key="{x:Static SystemColors.HotTrackBrushKey}" Color="Transparent" />
+            <SolidColorBrush x:Key="{x:Static SystemColors.HotTrackColorKey}" Color="Transparent" />
+        </ListView.Resources>
         <ListView.ContextMenu>
             <ContextMenu>
                 <MenuItem Command="{Binding UpdateAudioListCommand}" Header="Обновить список аудиозаписей">

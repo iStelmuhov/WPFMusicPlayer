@@ -1,9 +1,14 @@
 using System;
+using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
+using MahApps.Metro.Controls.Dialogs;
+using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
+using Newtonsoft.Json;
 using VkNet;
 using VkNet.Enums.Filters;
 using WPFMusicPlayer.Classes;
@@ -165,15 +170,40 @@ namespace WPFMusicPlayer.ViewModel
             }
         }
 
+        public ProgramSettings Settings { get; private set; }
+
         public MainViewModel()
         {
-           
+
+            try
+            {
+                using (StreamReader sr=new StreamReader("settings.json"))
+                {
+                    string jsonObj = sr.ReadToEnd();
+                    Settings = JsonConvert.DeserializeObject<ProgramSettings>(jsonObj);
+                }
+                
+            }
+            catch (Exception)
+            {
+                Settings=new ProgramSettings();
+            }
+
+            var paletteHelper= new PaletteHelper();
+            
+            paletteHelper.ReplacePrimaryColor(ProgramSettings.FindSwatchByName(Settings.PrimaryColor));
+            paletteHelper.ReplaceAccentColor(ProgramSettings.FindSwatchByName(Settings.AccentColor));
+            paletteHelper.SetLightDark(Settings.IsDark);
+
+
             VkApi =new VkApi();
+
+            
 
             _timer = new DispatcherTimer {Interval = TimeSpan.FromSeconds(1)};
             _timer.Tick += _timer_Tick;
            
-            AuthorizationPanel=new AuthorizationControl();
+            
 
             MePlayer.Player.MediaOpened += Player_MediaOpened;
             MePlayer.Player.MediaEnded += Player_MediaEnded;
@@ -186,6 +216,46 @@ namespace WPFMusicPlayer.ViewModel
                 MePlayer.StopAudio();
 
             MePlayer.VkAudio = null;
+
+            Settings.SaveLoginPassword = false;
+        }
+
+        private  bool LoginToAccount()
+        {
+            try
+            {
+                var autorizeAuthParams = new ApiAuthParams
+                {
+                    Login = Settings.Login,
+                    Password = Settings.Password,
+                    ApplicationId = MainViewModel.Appid,
+                    Settings = VkNet.Enums.Filters.Settings.All
+                };
+
+                 VkApi.Authorize(autorizeAuthParams);
+                OnAuthorizationSuccess();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                var materialSettings = new MetroDialogSettings
+                {
+                    CustomResourceDictionary =
+                                        new ResourceDictionary()
+                                        {
+                                            Source =
+                                                new Uri(
+                                                    "pack://application:,,,/MaterialDesignThemes.MahApps;component/Themes/MaterialDesignTheme.MahApps.Dialogs.xaml")
+                                        },
+                    SuppressDefaultResources = true,
+                    AnimateShow = true,
+                    ColorScheme = MetroDialogColorScheme.Accented
+                };
+
+                 DialogCoordinator.Instance.ShowMessageAsync(this, "Œ¯Ë·Í‡", ex.Message, MessageDialogStyle.Affirmative, materialSettings);
+            }
+            return false;
         }
 
         private RelayCommand<bool> _myCommand;
@@ -348,6 +418,42 @@ namespace WPFMusicPlayer.ViewModel
         public virtual void OnAccountSignOut()
         {
             AccountSignOut?.Invoke(this, EventArgs.Empty);
+        }
+
+        private RelayCommand _windowClosingCommand;
+        public RelayCommand WindowClosing
+        {
+            get
+            {
+                return  _windowClosingCommand
+                    ?? ( _windowClosingCommand = new RelayCommand(
+                    () =>
+                    {
+                        using (StreamWriter sw = new StreamWriter("settings.json"))
+                        {
+                            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+                            string jsonObject = JsonConvert.SerializeObject(Settings,Formatting.Indented, settings);
+                            sw.Write(jsonObject);
+                        }
+                    }));
+            }
+        }
+
+        private RelayCommand _windowLoadedCommand;
+        public RelayCommand WindowLoaded
+        {
+            get
+            {
+                return _windowLoadedCommand
+                    ?? (_windowLoadedCommand = new RelayCommand(
+                    () =>
+                    {
+                        if (Settings.SaveLoginPassword && LoginToAccount())
+                            AuthorizationPanel = new UserProfiler();
+                        else
+                            AuthorizationPanel = new AuthorizationControl();
+                    }));
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using MaterialDesignColors;
@@ -9,10 +10,12 @@ namespace WPFMusicPlayer.ViewModel
     public class SettingsFlyoutViewModel :ViewModelBase
     {
         public IEnumerable<Swatch> Swatches { get; }
+        public MainViewModel MainVm { get; }
 
         public SettingsFlyoutViewModel()
         {
             Swatches = new SwatchesProvider().Swatches;
+            MainVm = ((MainViewModel)Application.Current.MainWindow.DataContext);
         }
 
         private RelayCommand<object> _applyPrimaryColorCommand;
@@ -25,6 +28,7 @@ namespace WPFMusicPlayer.ViewModel
                     (swatch) =>
                     {
                         new PaletteHelper().ReplacePrimaryColor(swatch as Swatch);
+                        MainVm.Settings.PrimaryColor = ((Swatch)swatch).Name;
                     }));
             }
         }
@@ -38,7 +42,9 @@ namespace WPFMusicPlayer.ViewModel
                     ?? (_applyAccentColorCommand = new RelayCommand<object>(
                     (swatch) =>
                     {
+                        
                         new PaletteHelper().ReplaceAccentColor(swatch as Swatch);
+                        MainVm.Settings.AccentColor= ((Swatch)swatch).Name;
                     }));
             }
         }
