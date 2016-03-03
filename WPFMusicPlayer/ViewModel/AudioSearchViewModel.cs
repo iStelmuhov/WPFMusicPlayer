@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using MahApps.Metro.Controls.Dialogs;
 using VkNet.Enums;
@@ -223,6 +222,7 @@ namespace WPFMusicPlayer.ViewModel
                     ?? (_searchCommand = new RelayCommand(
                     () =>
                     {
+                        
                         Task loadAudiosTask=new Task(SearchAudiosByText);
                         loadAudiosTask.Start();
                     }));
@@ -231,9 +231,14 @@ namespace WPFMusicPlayer.ViewModel
 
         private void SearchAudiosByText()
         {
+            MainVm.ShowProgressBar = true;
+
             int totalCount;
             if (MainVm.VkApi.UserId != null)
                 Audios = new ObservableCollection<Audio>(MainVm.VkApi.Audio.Search(TextToSearch, out totalCount, true, AudioSort.Popularity, false, 300, 0));
+
+            MainVm.ShowProgressBar = false;
+
         }
     }
 }

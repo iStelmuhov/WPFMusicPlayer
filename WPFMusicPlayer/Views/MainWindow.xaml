@@ -17,7 +17,6 @@
                    Width="1000"
                    Height="600"
                    Background="{DynamicResource MaterialDesignPaper}"
-                   FontFamily="{StaticResource DefaultFont}"
                    GlowBrush="{DynamicResource AccentColorBrush}"
                    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
                    WindowTransitionsEnabled="False"
@@ -37,6 +36,7 @@
 
     <Window.Resources>
         <classes:NullBooleanConverter x:Key="NullBooleanConverter" />
+        <classes:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
 
     <materialDesign:DialogHost DialogContent="{Binding DialogHostContent}"
@@ -47,6 +47,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="60" />
                     <RowDefinition Height="9*" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
@@ -89,10 +90,6 @@
                                  Header="Мои аудиозаписи">
                             <wpfMusicPlayer:UserAudioList />
                         </TabItem>
-                        <TabItem x:Name="CurrentListItem"
-                                 Width="150"
-                                 Content="{Binding MePlayer.UsedList}"
-                                 Header="Текущий плейлист" />
                         <TabItem x:Name="RecommendationsListItem"
                                  Width="150"
                                  Header="Рекомендации">
@@ -103,6 +100,10 @@
                                  Header="Поиск">
                             <views:AudioSearch />
                         </TabItem>
+                        <TabItem x:Name="CurrentListItem"
+                                 Width="150"
+                                 Content="{Binding MePlayer.UsedList}"
+                                 Header="Текущий плейлист" />
                     </dragablz:TabablzControl>
                 </dockablz:Layout>
                 <Grid x:Name="PlayerArea"
@@ -122,7 +123,11 @@
                         <RowDefinition Height="2.5*" />
                         <RowDefinition Height="2*" />
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0">
+                    <TextBlock Grid.Row="0"
+                               FontSize="18"
+                               FontStretch="Condensed"
+                               FontWeight="Light"
+                               TextTrimming="WordEllipsis">
                         <TextBlock.Text>
                             <MultiBinding StringFormat="{}{0} — {1}">
                                 <Binding Path="MePlayer.VkAudio.Artist" />
@@ -288,6 +293,10 @@
                         </ToggleButton>
                     </StackPanel>
                 </Grid>
+                <ProgressBar Grid.Row="2"
+                             IsIndeterminate="True"
+                             Visibility="{Binding ShowProgressBar,
+                                                  Converter={StaticResource BooleanToVisibilityConverter}}" />
             </Grid>
             <metro:FlyoutsControl d:IsHidden="True">
                 <metro:Flyout x:Name="LeftFlyout"
@@ -295,6 +304,7 @@
                                               Path=ActualWidth}"
                               Background="{DynamicResource PrimaryHueDarkBrush}"
                               Header="Настройки"
+                              Foreground="White"
                               Position="Left">
                     <views:SettingsFlyout />
                 </metro:Flyout>

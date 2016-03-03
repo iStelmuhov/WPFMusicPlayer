@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -7,6 +9,8 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Media;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
+using Microsoft.Win32;
 using VkNet.Model.Attachments;
 using WPFMusicPlayer.ViewModel;
 
@@ -34,6 +38,37 @@ namespace WPFMusicPlayer.Classes
 
                 _audios = value;
                 RaisePropertyChanged(AudiosPropertyName);
+            }
+        }
+
+        public const string DownloadProgressValuePropertyName = "DownloadProgressValue";
+        private int _downloadProgress = 0;
+        public int DownloadProgressValue
+        {
+            get
+            {
+                return _downloadProgress;
+            }
+
+            set
+            {
+                if (_downloadProgress == value)
+                {
+                    return;
+                }
+
+                _downloadProgress = value;
+                RaisePropertyChanged(DownloadProgressValuePropertyName);
+            }
+        }
+
+        public Visibility DownloadProgressBarVisibility
+        {
+            get
+            {
+                return (DownloadProgressValue > 0 && DownloadProgressValue < 100)
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
             }
         }
 
@@ -81,5 +116,40 @@ where TChildItem : DependencyObject
         public abstract void SwitchListPlayButtonVisibility(object listItem);
 
         public abstract void UpdateAudioList();
+
+        private RelayCommand<Uri> _saveAudioFileCommand;
+
+
+        public RelayCommand<Uri> SaveAudioFile
+        {
+            get
+            {
+                return _saveAudioFileCommand
+                    ?? (_saveAudioFileCommand = new RelayCommand<Uri>(
+                     (url) =>
+                    {
+
+                        SaveFileDialog saveDialog = new SaveFileDialog();
+
+                        saveDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                        saveDialog.Filter = "MPEG-1/2/2.5 Layer 3 (*.mp3)|*.mp3";
+
+                        if (saveDialog.ShowDialog() == true && System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+                        {
+                            using (WebClient webClient = new WebClient())
+                            {
+                                webClient.DownloadProgressChanged += WebClient_DownloadProgressChanged;
+                                webClient.DownloadFileAsync(url, saveDialog.FileName);
+                            }
+                        }
+                    }));
+            }
+        }
+
+        private void WebClient_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        {
+            DownloadProgressValue = e.ProgressPercentage;
+            RaisePropertyChanged("DownloadProgressBarVisibility");
+        }
     }
 }

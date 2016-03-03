@@ -7,6 +7,7 @@
              xmlns:materialDesignColors="clr-namespace:MaterialDesignColors;assembly=MaterialDesignColors"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+             Foreground="WhiteSmoke"
              d:DesignHeight="300"
              d:DesignWidth="300"
              mc:Ignorable="d">
@@ -51,6 +52,7 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.ColumnSpan="2"
                                Margin="8"
+                               Foreground="Black"
                                Text="{Binding Name}" />
                     <Border Grid.Row="1"
                             Grid.Column="0"
@@ -111,7 +113,10 @@
         </StackPanel>
         <Expander Grid.Row="1"
                   VerticalAlignment="Top"
-                  Header="Изменить цвет">
+                  Foreground="White">
+            <Expander.Header>
+                <TextBlock FontSize="16" Text="Изменить цвет" />
+            </Expander.Header>
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding Swatches, Mode=OneTime}">
                     <ItemsControl.ItemsPanel>

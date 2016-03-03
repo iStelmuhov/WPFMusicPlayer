@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows;
+﻿using System.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
-using MaterialDesignColors;
-using MaterialDesignThemes.Wpf;
 using VkNet.Enums.Filters;
 using WPFMusicPlayer.Classes;
 using WPFMusicPlayer.Views;
@@ -17,7 +13,6 @@ namespace WPFMusicPlayer.ViewModel
         private string pxApiKey= "rEDd7OkHtWg6twlvw1fxyUTqLRXq2HVxVA1RVrQG";
 
        
-
         public const string BackgroundImagePropertyName = "BackgroundImage";
         private WebImage _backgroundImage;
         public WebImage BackgroundImage

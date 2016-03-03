@@ -19,6 +19,7 @@
     <UserControl.DataContext>
         <local:AudioSearchViewModel />
     </UserControl.DataContext>
+
     <DockPanel IsEnabled="{Binding IsActive}">
         <Grid DockPanel.Dock="Top">
             <Grid.ColumnDefinitions>
@@ -43,6 +44,9 @@
                                          Kind="Magnify" />
             </Button>
         </Grid>
+        <ProgressBar DockPanel.Dock="Top"
+                     Visibility="{Binding DownloadProgressBarVisibility}"
+                     Value="{Binding DownloadProgressValue}" />
         <ListView x:Name="AudiosList"
                   BorderThickness="0"
                   ItemsSource="{Binding Audios}"
@@ -118,19 +122,31 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </WrapPanel>
-                        <Button HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Command="{Binding RelativeSource={RelativeSource FindAncestor,
-                                                                                 AncestorType={x:Type views:AudioSearch}},
-                                                  Path=DataContext.AddAudio}"
-                                CommandParameter="{Binding Id}"
-                                DockPanel.Dock="Right"
-                                Opacity="0.5"
-                                Style="{DynamicResource MaterialDesignFlatButton}">
-                            <materialDesign:PackIcon Width="24"
-                                                     Height="24"
-                                                     Kind="Plus" />
-                        </Button>
+                        <materialDesign:PopupBox DockPanel.Dock="Right" PlacementMode="BottomAndAlignRightEdges">
+                            <StackPanel Orientation="Vertical">
+                                <Button Command="{Binding RelativeSource={RelativeSource FindAncestor,
+                                                                                         AncestorType={x:Type views:AudioSearch}},
+                                                          Path=DataContext.SaveAudioFile}"
+                                        CommandParameter="{Binding Url}"
+                                        Opacity="0.5"
+                                        Style="{DynamicResource MaterialDesignFlatButton}"
+                                        ToolTip="Сохранить аудиофайл">
+                                    <materialDesign:PackIcon Width="24"
+                                                             Height="24"
+                                                             Kind="ContentSave" />
+                                </Button>
+                                <Button Command="{Binding RelativeSource={RelativeSource FindAncestor,
+                                                                                         AncestorType={x:Type views:AudioSearch}},
+                                                          Path=DataContext.AddAudio}"
+                                        CommandParameter="{Binding Id}"
+                                        Opacity="0.5"
+                                        Style="{DynamicResource MaterialDesignFlatButton}">
+                                    <materialDesign:PackIcon Width="24"
+                                                             Height="24"
+                                                             Kind="Plus" />
+                                </Button>
+                            </StackPanel>
+                        </materialDesign:PopupBox>
                         <Rectangle Fill="Transparent">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="PreviewMouseLeftButtonDown">

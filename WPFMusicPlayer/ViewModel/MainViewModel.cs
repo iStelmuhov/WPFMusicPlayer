@@ -1,16 +1,13 @@
 using System;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using MahApps.Metro.Controls.Dialogs;
-using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
 using Newtonsoft.Json;
 using VkNet;
-using VkNet.Enums.Filters;
 using WPFMusicPlayer.Classes;
 using WPFMusicPlayer.Views;
 
@@ -170,6 +167,28 @@ namespace WPFMusicPlayer.ViewModel
             }
         }
 
+
+        public const string ShowProgressBarPropertyName = "ShowProgressBar";
+        private bool _showProgressBar = false;
+        public bool ShowProgressBar
+        {
+            get
+            {
+                return _showProgressBar;
+            }
+
+            set
+            {
+                if (_showProgressBar == value)
+                {
+                    return;
+                }
+
+                _showProgressBar = value;
+                RaisePropertyChanged(ShowProgressBarPropertyName);
+            }
+        }
+
         public ProgramSettings Settings { get; private set; }
 
         public MainViewModel()
@@ -256,21 +275,6 @@ namespace WPFMusicPlayer.ViewModel
                  DialogCoordinator.Instance.ShowMessageAsync(this, "Ошибка", ex.Message, MessageDialogStyle.Affirmative, materialSettings);
             }
             return false;
-        }
-
-        private RelayCommand<bool> _myCommand;
-        public RelayCommand<bool> MyCommand
-        {
-            get
-            {
-                return _myCommand
-                    ?? (_myCommand = new RelayCommand<bool>(isDark =>
-                    {
-                        int a = 2;
-
-                        new PaletteHelper().SetLightDark(isDark);
-                    }));
-            }
         }
 
         private RelayCommand _timeSliderLeftButtonDown;
@@ -405,7 +409,6 @@ namespace WPFMusicPlayer.ViewModel
                     }));
             }
         }
-
 
         public event EventHandler AuthorizationSuccess;
         public virtual void OnAuthorizationSuccess()

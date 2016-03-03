@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -156,7 +155,12 @@ namespace WPFMusicPlayer.ViewModel
         public override void UpdateAudioList()
         {
             if (MainVm.VkApi.UserId != null)
+            {
+                MainVm.ShowProgressBar = true;
                 Audios = new ObservableCollection<Audio>(MainVm.VkApi.Audio.GetRecommendations((ulong)MainVm.VkApi.UserId.Value));
+                MainVm.ShowProgressBar = true;
+            }
+                
         }
     }
 }

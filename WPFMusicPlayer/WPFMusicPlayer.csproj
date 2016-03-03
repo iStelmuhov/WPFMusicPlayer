@@ -107,8 +107,28 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Classes\Album.cs" />
+    <Compile Include="Classes\Artist.cs" />
+    <Compile Include="Classes\Avatars.cs" />
+    <Compile Include="Classes\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Classes\Default.cs" />
+    <Compile Include="Classes\ExternalIds.cs" />
+    <Compile Include="Classes\ExternalUrls.cs" />
+    <Compile Include="Classes\ExternalUrls2.cs" />
+    <Compile Include="Classes\ExternalUrls3.cs" />
+    <Compile Include="Classes\Filters.cs" />
+    <Compile Include="Classes\Image.cs" />
+    <Compile Include="Classes\ImageUrl.cs" />
+    <Compile Include="Classes\Item.cs" />
+    <Compile Include="Classes\Large.cs" />
+    <Compile Include="Classes\Photo.cs" />
     <Compile Include="Classes\ProgramSettings.cs" />
     <Compile Include="Classes\PxApiData.cs" />
+    <Compile Include="Classes\Small.cs" />
+    <Compile Include="Classes\Tiny.cs" />
+    <Compile Include="Classes\Tracks.cs" />
+    <Compile Include="Classes\User.cs" />
+    <Compile Include="Classes\ValueToVisibilityConventer.cs" />
     <Compile Include="Classes\WebImage.cs" />
     <Compile Include="Classes\AudioFile.cs" />
     <Compile Include="Classes\AudioListViewModel.cs" />
@@ -117,29 +137,30 @@
     <Compile Include="Classes\SelectedAudioControlConventer.cs" />
     <Compile Include="Classes\SpotifyApiData.cs" />
     <Compile Include="Enums\Picture.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ViewModel\AudioSearchViewModel.cs" />
     <Compile Include="ViewModel\AuthorizationControlViewModel.cs" />
     <Compile Include="ViewModel\AuthorizationDialogViewModel.cs" />
-    <Compile Include="Views\AudioSearch.xaml.cs">
+    <Compile Include="Views\AudioSearch.cs">
       <DependentUpon>AudioSearch.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\AuthorizationDialog.xaml.cs">
+    <Compile Include="Views\AuthorizationDialog.cs">
       <DependentUpon>AuthorizationDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\SettingsFlyoutViewModel.cs" />
-    <Compile Include="Views\AuthorizationControl.xaml.cs">
+    <Compile Include="Views\AuthorizationControl.cs">
       <DependentUpon>AuthorizationControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\RecommendationsAudioList.xaml.cs">
+    <Compile Include="Views\RecommendationsAudioList.cs">
       <DependentUpon>RecommendationsAudioList.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\SettingsFlyout.xaml.cs">
+    <Compile Include="Views\SettingsFlyout.cs">
       <DependentUpon>SettingsFlyout.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\UserAudioList.xaml.cs">
+    <Compile Include="Views\UserAudioList.cs">
       <DependentUpon>UserAudioList.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\UserProfiler.xaml.cs">
+    <Compile Include="Views\UserProfiler.cs">
       <DependentUpon>UserProfiler.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\MainViewModel.cs" />
@@ -163,11 +184,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="App.xaml.cs">
+    <Compile Include="App.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Views\MainWindow.xaml.cs">
+    <Compile Include="Views\MainWindow.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -206,6 +227,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
