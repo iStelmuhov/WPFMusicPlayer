@@ -40,7 +40,7 @@ namespace WPFMusicPlayer.ViewModel
         }
 
         public const string IsActivePropertyName = "IsActive";
-        private bool _isActive = false;
+        private bool _isActive;
         public bool IsActive
         {
             get
@@ -122,7 +122,7 @@ namespace WPFMusicPlayer.ViewModel
                 MainVm.MePlayer.PlayAudio();
         }
 
-        public override void UpdateAudioList()
+        protected override void UpdateAudioList()
         {}
 
         private RelayCommand<long> _addAudioCommand;

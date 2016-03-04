@@ -4,6 +4,7 @@ using System.Net.Mime;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using WPFMusicPlayer.Views;
 
 namespace WPFMusicPlayer.Classes
 {

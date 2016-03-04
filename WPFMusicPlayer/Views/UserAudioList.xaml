@@ -1,14 +1,13 @@
-﻿<UserControl x:Class="WPFMusicPlayer.UserAudioList"
+﻿<UserControl x:Class="WPFMusicPlayer.Views.UserAudioList"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:classes="clr-namespace:WPFMusicPlayer.Classes"
              xmlns:command="http://www.galasoft.ch/mvvmlight"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:local="clr-namespace:WPFMusicPlayer.ViewModel"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:wpfMusic="clr-namespace:WPFMusicPlayer"
+             xmlns:views="clr-namespace:WPFMusicPlayer.Views"
              FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
              d:DesignHeight="300"
              d:DesignWidth="300"
@@ -17,13 +16,16 @@
         <local:UserAudioListViewModel />
     </UserControl.DataContext>
 
-    <UserControl.Resources>
-        <classes:ValueToVisibilityConventer x:Key="ValueToVisibilityConventer" />
-    </UserControl.Resources>
-
-    <StackPanel Orientation="Vertical">
-        <ProgressBar Visibility="{Binding DownloadProgressBarVisibility}" Value="{Binding DownloadProgressValue}" />
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <ProgressBar Grid.Row="0"
+                     Visibility="{Binding DownloadProgressBarVisibility}"
+                     Value="{Binding DownloadProgressValue}" />
         <ListView x:Name="AudiosList"
+                  Grid.Row="1"
                   BorderThickness="0"
                   ItemsSource="{Binding Audios}"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -32,6 +34,7 @@
                 <SolidColorBrush x:Key="{x:Static SystemColors.HotTrackBrushKey}" Color="Transparent" />
                 <SolidColorBrush x:Key="{x:Static SystemColors.HotTrackColorKey}" Color="Transparent" />
             </ListView.Resources>
+
             <ListView.ContextMenu>
                 <ContextMenu>
                     <MenuItem Command="{Binding UpdateAudioListCommand}" Header="Обновить список аудиозаписей">
@@ -55,12 +58,12 @@
                                       Width="42"
                                       Height="42"
                                       Command="{Binding RelativeSource={RelativeSource FindAncestor,
-                                                                                       AncestorType={x:Type wpfMusic:UserAudioList}},
+                                                                                       AncestorType={x:Type views:UserAudioList}},
                                                         Path=DataContext.ListViewItemClick,
                                                         Mode=OneWay}"
                                       DockPanel.Dock="Left"
                                       IsChecked="{Binding RelativeSource={RelativeSource FindAncestor,
-                                                                                         AncestorType={x:Type wpfMusic:UserAudioList}},
+                                                                                         AncestorType={x:Type views:UserAudioList}},
                                                           Path=DataContext.MainVm.MePlayer.IsPlaying,
                                                           Mode=TwoWay}"
                                       IsEnabled="False"
@@ -93,7 +96,7 @@
                             </ToggleButton.Style>
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                                    <command:EventToCommand Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type wpfMusic:UserAudioList}}, Path=DataContext.ListViewItemClick, Mode=OneWay}" />
+                                    <command:EventToCommand Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type views:UserAudioList}}, Path=DataContext.ListViewItemClick, Mode=OneWay}" />
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </ToggleButton>
@@ -103,7 +106,7 @@
                                 <Button HorizontalAlignment="Right"
                                         VerticalAlignment="Center"
                                         Command="{Binding RelativeSource={RelativeSource FindAncestor,
-                                                                                         AncestorType={x:Type wpfMusic:UserAudioList}},
+                                                                                         AncestorType={x:Type views:UserAudioList}},
                                                           Path=DataContext.SaveAudioFile}"
                                         CommandParameter="{Binding Url}"
                                         Opacity="0.5"
@@ -116,7 +119,7 @@
                                 <Button HorizontalAlignment="Right"
                                         VerticalAlignment="Center"
                                         Command="{Binding RelativeSource={RelativeSource FindAncestor,
-                                                                                         AncestorType={x:Type wpfMusic:UserAudioList}},
+                                                                                         AncestorType={x:Type views:UserAudioList}},
                                                           Path=DataContext.RemoveAudio}"
                                         CommandParameter="{Binding Id}"
                                         Opacity="0.5"
@@ -132,14 +135,16 @@
                         <WrapPanel Orientation="Vertical">
                             <TextBlock Margin="10,0,0,0"
                                        FontSize="16"
-                                       Text="{Binding Title}" />
+                                       Text="{Binding Title}"
+                                       TextTrimming="WordEllipsis" />
                             <TextBlock Margin="10,0,0,0"
                                        FontSize="10"
                                        FontWeight="ExtraLight"
-                                       Text="{Binding Artist}" />
+                                       Text="{Binding Artist}"
+                                       TextTrimming="WordEllipsis" />
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                                    <command:EventToCommand Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type wpfMusic:UserAudioList}}, Path=DataContext.ListViewItemClick, Mode=OneWay}" />
+                                    <command:EventToCommand Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type views:UserAudioList}}, Path=DataContext.ListViewItemClick, Mode=OneWay}" />
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </WrapPanel>
@@ -147,7 +152,7 @@
                         <Rectangle Fill="Transparent">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                                    <command:EventToCommand Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type wpfMusic:UserAudioList}}, Path=DataContext.ListViewItemClick, Mode=OneWay}" />
+                                    <command:EventToCommand Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type views:UserAudioList}}, Path=DataContext.ListViewItemClick, Mode=OneWay}" />
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Rectangle>
@@ -156,6 +161,6 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-    </StackPanel>
+    </Grid>
 
 </UserControl>

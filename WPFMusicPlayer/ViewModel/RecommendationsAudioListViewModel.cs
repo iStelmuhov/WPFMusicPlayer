@@ -9,6 +9,7 @@ using GalaSoft.MvvmLight.CommandWpf;
 using MahApps.Metro.Controls.Dialogs;
 using VkNet.Model.Attachments;
 using WPFMusicPlayer.Classes;
+using WPFMusicPlayer.Views;
 
 namespace WPFMusicPlayer.ViewModel
 {
@@ -152,7 +153,7 @@ namespace WPFMusicPlayer.ViewModel
             VisibleItem.Visibility = Visibility.Visible;
         }
 
-        public override void UpdateAudioList()
+        protected override void UpdateAudioList()
         {
             if (MainVm.VkApi.UserId != null)
             {

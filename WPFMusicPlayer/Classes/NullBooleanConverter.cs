@@ -19,11 +19,7 @@ namespace WPFMusicPlayer.Classes
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value != null)
-            {
-                return value;
-            }
-            return null;
+            return value;
         }
     }
 }

@@ -1,43 +1,21 @@
 ﻿using System;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
-using VkNet.Model;
 using VkNet.Model.Attachments;
-using WPFMusicPlayer.Enums;
-using WPFMusicPlayer.ViewModel;
 
 namespace WPFMusicPlayer.Classes
 {
     public sealed class AudioFile :ViewModelBase
     {
 
-        public const string PlayerPropertyName = "Player";
-        private MediaPlayer _player;
-        public MediaPlayer Player
-        {
-            get
-            {
-                return _player;
-            }
 
-            set
-            {
-                if (_player == value)
-                {
-                    return;
-                }
+        public MediaPlayer Player { get; private set; }
 
-                _player = value;
-                RaisePropertyChanged(PlayerPropertyName);
-            }
-        }
 
-        public const string VkAudioPropertyName = "VkAudio";
-        private Audio _vkAudio = null;
+        private Audio _vkAudio;
         public Audio VkAudio
         {
             get
@@ -56,12 +34,11 @@ namespace WPFMusicPlayer.Classes
                 OnVkAudioChanged();
                 if(VkAudio!=null)
                     Player.Open(VkAudio.Url);
-                RaisePropertyChanged(VkAudioPropertyName);
             }
         }
 
         public const string UsedListPropertyName = "UsedList";
-        private UserControl _usedList = null;
+        private UserControl _usedList;
         public UserControl UsedList
         {
             get
@@ -83,7 +60,7 @@ namespace WPFMusicPlayer.Classes
 
 
         public const string IsPlayingPropertyName = "IsPlaying";
-        private bool _isPlaying = false;
+        private bool _isPlaying;
         public bool IsPlaying
         {
             get

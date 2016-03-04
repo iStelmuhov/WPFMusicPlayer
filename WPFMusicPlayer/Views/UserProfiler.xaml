@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="WPFMusicPlayer.UserProfiler"
+﻿<UserControl x:Class="WPFMusicPlayer.Views.UserProfiler"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -59,7 +59,8 @@
                         <Button Width="24"
                                 Height="24"
                                 Command="{Binding OpenSettingsFlyout}"
-                                Style="{DynamicResource MaterialDesignFloatingActionDarkButton}">
+                                Style="{DynamicResource MaterialDesignFloatingActionDarkButton}"
+                                ToolTip="Вызвать панель настроек">
                             <materialDesign:PackIcon Width="20"
                                                      Height="20"
                                                      HorizontalAlignment="Center"
@@ -70,7 +71,8 @@
                         <Button Width="24"
                                 Height="24"
                                 Command="{Binding RefreshBgImage}"
-                                Style="{DynamicResource MaterialDesignFloatingActionDarkButton}">
+                                Style="{DynamicResource MaterialDesignFloatingActionDarkButton}"
+                                ToolTip="Обновить задний фон">
                             <materialDesign:PackIcon Width="20"
                                                      Height="20"
                                                      HorizontalAlignment="Center"
@@ -81,7 +83,8 @@
                         <Button Width="24"
                                 Height="24"
                                 Command="{Binding SignOut}"
-                                Style="{DynamicResource MaterialDesignFloatingActionDarkButton}">
+                                Style="{DynamicResource MaterialDesignFloatingActionDarkButton}"
+                                ToolTip="Выйти из профиля">
                             <materialDesign:PackIcon Width="20"
                                                      Height="20"
                                                      HorizontalAlignment="Center"

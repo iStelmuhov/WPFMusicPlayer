@@ -115,7 +115,7 @@ where TChildItem : DependencyObject
 
         public abstract void SwitchListPlayButtonVisibility(object listItem);
 
-        public abstract void UpdateAudioList();
+        protected abstract void UpdateAudioList();
 
         private RelayCommand<Uri> _saveAudioFileCommand;
 

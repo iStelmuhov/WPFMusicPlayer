@@ -110,9 +110,11 @@
                         <WrapPanel Orientation="Vertical">
                             <TextBlock Margin="10,0,0,0"
                                        FontSize="16"
+                                       TextTrimming="WordEllipsis"
                                        Text="{Binding Title}" />
                             <TextBlock Margin="10,0,0,0"
                                        FontSize="10"
+                                       TextTrimming="WordEllipsis"
                                        FontWeight="ExtraLight"
                                        Text="{Binding Artist}" />
 

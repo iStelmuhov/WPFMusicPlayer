@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using VkNet.Model.Attachments;
 
 namespace WPFMusicPlayer.Classes
 {

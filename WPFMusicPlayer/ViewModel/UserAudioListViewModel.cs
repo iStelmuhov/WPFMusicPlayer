@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using GalaSoft.MvvmLight.CommandWpf;
 using VkNet.Model.Attachments;
 using WPFMusicPlayer.Classes;
+using WPFMusicPlayer.Views;
 
 namespace WPFMusicPlayer.ViewModel
 {
@@ -117,9 +119,19 @@ namespace WPFMusicPlayer.ViewModel
         }
 
         private RelayCommand _updateAudioListCommand;
-        public RelayCommand UpdateAudioListCommand => _updateAudioListCommand
-                                                      ?? ( _updateAudioListCommand = new RelayCommand(
-                                                          UpdateAudioList));
+        public RelayCommand UpdateAudioListCommand
+        {
+            get
+            {
+                return _updateAudioListCommand
+                    ?? (_updateAudioListCommand = new RelayCommand(
+                    () =>
+                    {
+                        Task updateTask=new Task(UpdateAudioList);
+                        updateTask.Start();
+                    }));
+            }
+        }
 
         public override void ChangeListPlayButtonVisibility(object listItem, Visibility visibility)
         {
@@ -154,7 +166,7 @@ namespace WPFMusicPlayer.ViewModel
             VisibleItem.Visibility = Visibility.Visible;
         }
 
-        public override void UpdateAudioList()
+        protected override void UpdateAudioList()
         {
 
             if (MainVm.VkApi.UserId != null)

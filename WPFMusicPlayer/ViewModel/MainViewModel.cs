@@ -104,7 +104,7 @@ namespace WPFMusicPlayer.ViewModel
 
 
         public const string IsHostDialogOpenPropertyName = "IsHostDialogOpen";
-        private bool _osHostDialogOpen = false;
+        private bool _osHostDialogOpen;
         public bool IsHostDialogOpen
         {
             get
@@ -169,7 +169,7 @@ namespace WPFMusicPlayer.ViewModel
 
 
         public const string ShowProgressBarPropertyName = "ShowProgressBar";
-        private bool _showProgressBar = false;
+        private bool _showProgressBar;
         public bool ShowProgressBar
         {
             get
@@ -247,7 +247,7 @@ namespace WPFMusicPlayer.ViewModel
                 {
                     Login = Settings.Login,
                     Password = Settings.Password,
-                    ApplicationId = MainViewModel.Appid,
+                    ApplicationId = Appid,
                     Settings = VkNet.Enums.Filters.Settings.All
                 };
 

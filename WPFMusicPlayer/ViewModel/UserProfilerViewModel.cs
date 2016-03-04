@@ -76,7 +76,7 @@ namespace WPFMusicPlayer.ViewModel
 
         private async void LoadBgImage()
         {
-            BackgroundImage = await WebImage.GetMostPopularPhotoFrom500px(pxApiKey, 21,_currentPage,_currentPhotoNumber++);
+            BackgroundImage = await WebImage.GetMostPopularPhotoFrom500Px(pxApiKey, 21,_currentPage,_currentPhotoNumber++);
         }
 
         private void LoadUserInformation()
@@ -100,7 +100,7 @@ namespace WPFMusicPlayer.ViewModel
                             _currentPhotoNumber = 0;
                         }
 
-                        BackgroundImage = await WebImage.GetMostPopularPhotoFrom500px(pxApiKey, 21, _currentPage, _currentPhotoNumber++);
+                        BackgroundImage = await WebImage.GetMostPopularPhotoFrom500Px(pxApiKey, 21, _currentPage, _currentPhotoNumber++);
 
                     }));
             }

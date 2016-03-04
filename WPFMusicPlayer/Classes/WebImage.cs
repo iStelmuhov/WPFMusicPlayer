@@ -18,7 +18,6 @@ namespace WPFMusicPlayer.Classes
 
         public const string ImagePropertyName = "Image";
         private Uri _image;
-
         public Uri Image
         {
             get
@@ -42,6 +41,7 @@ namespace WPFMusicPlayer.Classes
         {
             Image=new Uri(url);
         }
+
         /**********************************************************************************************************/
 
         public static async Task<WebImage> GetAlbumCoverFromSpotify(string artistName,string audioName)
@@ -76,14 +76,14 @@ namespace WPFMusicPlayer.Classes
             return baseUrl;
         }
 
-        private static string StringConverToWeb(string str)
+        public static string StringConverToWeb(string str)
         {
             return str.Replace(" ", "+");
         }
 
         /**********************************************************************************************************/
 
-        public static async Task<WebImage> GetMostPopularPhotoFrom500px(string apiKey,int imageSize,int pageNumber=1,int imgNumber=1)
+        public static async Task<WebImage> GetMostPopularPhotoFrom500Px(string apiKey,int imageSize,int pageNumber=1,int imgNumber=1)
         {
             var client =new HttpClient();
             var baseUrl =

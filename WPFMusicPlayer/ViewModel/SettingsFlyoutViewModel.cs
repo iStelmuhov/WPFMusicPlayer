@@ -25,7 +25,7 @@ namespace WPFMusicPlayer.ViewModel
             {
                 return _applyPrimaryColorCommand
                     ?? (_applyPrimaryColorCommand = new RelayCommand<object>(
-                    (swatch) =>
+                    swatch =>
                     {
                         new PaletteHelper().ReplacePrimaryColor(swatch as Swatch);
                         MainVm.Settings.PrimaryColor = ((Swatch)swatch).Name;
@@ -40,7 +40,7 @@ namespace WPFMusicPlayer.ViewModel
             {
                 return _applyAccentColorCommand
                     ?? (_applyAccentColorCommand = new RelayCommand<object>(
-                    (swatch) =>
+                    swatch =>
                     {
                         
                         new PaletteHelper().ReplaceAccentColor(swatch as Swatch);
@@ -56,7 +56,7 @@ namespace WPFMusicPlayer.ViewModel
             {
                 return _changeLightDarkThemeCommand
                     ?? (_changeLightDarkThemeCommand = new RelayCommand<bool>(
-                    (isDark) =>
+                    isDark =>
                     {
                         new PaletteHelper().SetLightDark(isDark);
                     }));
