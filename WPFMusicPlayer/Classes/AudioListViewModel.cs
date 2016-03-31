@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Documents;
 using System.Windows.Media;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -125,19 +122,21 @@ where TChildItem : DependencyObject
             get
             {
                 return _saveAudioFileCommand
-                    ?? (_saveAudioFileCommand = new RelayCommand<Uri>(
-                     (url) =>
+                    ?? (_saveAudioFileCommand = new RelayCommand<Uri>( (url) =>
                     {
 
-                        SaveFileDialog saveDialog = new SaveFileDialog();
+                        SaveFileDialog saveDialog = new SaveFileDialog
+                        {
+                            InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                            Filter = "MPEG-1/2/2.5 Layer 3 (*.mp3)|*.mp3"
+                        };
 
-                        saveDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                        saveDialog.Filter = "MPEG-1/2/2.5 Layer 3 (*.mp3)|*.mp3";
 
                         if (saveDialog.ShowDialog() == true && System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
                         {
                             using (WebClient webClient = new WebClient())
                             {
+                               
                                 webClient.DownloadProgressChanged += WebClient_DownloadProgressChanged;
                                 webClient.DownloadFileAsync(url, saveDialog.FileName);
                             }
@@ -145,6 +144,7 @@ where TChildItem : DependencyObject
                     }));
             }
         }
+
 
         private void WebClient_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {

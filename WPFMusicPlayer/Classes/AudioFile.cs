@@ -13,9 +13,10 @@ namespace WPFMusicPlayer.Classes
 
 
         public MediaPlayer Player { get; private set; }
-
+        public const string VkAudioPropertyName = "VkAudio";
 
         private Audio _vkAudio;
+
         public Audio VkAudio
         {
             get
@@ -31,8 +32,9 @@ namespace WPFMusicPlayer.Classes
                 }
 
                 _vkAudio = value;
+                RaisePropertyChanged(VkAudioPropertyName);
                 OnVkAudioChanged();
-                if(VkAudio!=null)
+                if (VkAudio != null)
                     Player.Open(VkAudio.Url);
             }
         }
@@ -124,6 +126,7 @@ namespace WPFMusicPlayer.Classes
             if (_vkAudio == null)
                 throw new NullReferenceException();
 
+            RaisePropertyChanged(VkAudioPropertyName);
             Player.Play();
             IsPlaying = true;
         }

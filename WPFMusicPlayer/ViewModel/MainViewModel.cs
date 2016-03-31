@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight;
@@ -12,22 +14,10 @@ using WPFMusicPlayer.Classes;
 using WPFMusicPlayer.Views;
 
 namespace WPFMusicPlayer.ViewModel
-{
-    /// <summary>
-    /// This class contains properties that the main View can data bind to.
-    /// <para>
-    /// Use the <strong>mvvminpc</strong> snippet to add bindable properties to this ViewModel.
-    /// </para>
-    /// <para>
-    /// You can also use Blend to data bind with the tool's support.
-    /// </para>
-    /// <para>
-    /// See http://www.galasoft.ch/mvvm
-    /// </para>
-    /// </summary>
-    /// 
+{ 
     public class MainViewModel : ViewModelBase
     {
+        #region Properties
         public  static ulong Appid = 5233775;
 
         public VkApi VkApi;
@@ -189,14 +179,40 @@ namespace WPFMusicPlayer.ViewModel
             }
         }
 
+
+        public const string InternetConnectionAvailabilityPropertyName = "InternetConnectionAvailability";
+        private bool _internetConnectionAvalibility = System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable();
+        public bool InternetConnectionAvailability
+        {
+            get
+            {
+                return _internetConnectionAvalibility;
+            }
+
+            set
+            {
+                if (_internetConnectionAvalibility == value)
+                {
+                    return;
+                }
+
+                _internetConnectionAvalibility = value;
+                RaisePropertyChanged(InternetConnectionAvailabilityPropertyName);
+            }
+        }
+
+        private DispatcherTimer _checkNetworkAvailability;
+
         public ProgramSettings Settings { get; private set; }
+
+        #endregion
 
         public MainViewModel()
         {
 
             try
             {
-                using (StreamReader sr=new StreamReader("settings.json"))
+                using (StreamReader sr=new StreamReader("settings.data"))
                 {
                     string jsonObj = sr.ReadToEnd();
                     Settings = JsonConvert.DeserializeObject<ProgramSettings>(jsonObj);
@@ -217,16 +233,27 @@ namespace WPFMusicPlayer.ViewModel
 
             VkApi =new VkApi();
 
-            
-
             _timer = new DispatcherTimer {Interval = TimeSpan.FromSeconds(1)};
             _timer.Tick += _timer_Tick;
-           
-            
+
+            InternetConnectionAvailability = System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable();
+
+            _checkNetworkAvailability =new DispatcherTimer {Interval = TimeSpan.FromSeconds(5)};
+            _checkNetworkAvailability.Tick += _checkNetworkAvailability_Tick;
+            _checkNetworkAvailability.Start();
+
 
             MePlayer.Player.MediaOpened += Player_MediaOpened;
             MePlayer.Player.MediaEnded += Player_MediaEnded;
             AccountSignOut += MainViewModel_AccountSignOut;
+        }
+
+        private void _checkNetworkAvailability_Tick(object sender, EventArgs e)
+        {
+            Task.Run(() =>
+            {
+                InternetConnectionAvailability = System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable();
+            });
         }
 
         private void MainViewModel_AccountSignOut(object sender, EventArgs e)
@@ -241,6 +268,7 @@ namespace WPFMusicPlayer.ViewModel
 
         private  bool LoginToAccount()
         {
+            if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable()) return false;
             try
             {
                 var autorizeAuthParams = new ApiAuthParams
@@ -432,7 +460,7 @@ namespace WPFMusicPlayer.ViewModel
                     ?? ( _windowClosingCommand = new RelayCommand(
                     () =>
                     {
-                        using (StreamWriter sw = new StreamWriter("settings.json"))
+                        using (StreamWriter sw = new StreamWriter("settings.data"))
                         {
                             JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
                             string jsonObject = JsonConvert.SerializeObject(Settings,Formatting.Indented, settings);

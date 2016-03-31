@@ -46,6 +46,7 @@ namespace WPFMusicPlayer.Classes
 
         public static async Task<WebImage> GetAlbumCoverFromSpotify(string artistName,string audioName)
         {
+            if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable()) return null;
 
             var client = new HttpClient();
             var baseUrl = GetBaseUrl(audioName, artistName);

@@ -12,15 +12,17 @@
                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                    xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
                    xmlns:views="clr-namespace:WPFMusicPlayer.Views"
-                   xmlns:wpfMusicPlayer="clr-namespace:WPFMusicPlayer"
                    Title="VK Music Player"
                    Width="1000"
                    Height="600"
+                   MinWidth="450"
+                   MinHeight="550"
                    Background="{DynamicResource MaterialDesignPaper}"
                    GlowBrush="{DynamicResource AccentColorBrush}"
                    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
                    WindowTransitionsEnabled="False"
                    mc:Ignorable="d">
+
     <Window.DataContext>
         <local:MainViewModel />
     </Window.DataContext>
@@ -37,6 +39,7 @@
     <Window.Resources>
         <classes:NullBooleanConverter x:Key="NullBooleanConverter" />
         <classes:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <classes:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
     </Window.Resources>
 
     <materialDesign:DialogHost DialogContent="{Binding DialogHostContent}"
@@ -47,6 +50,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="60" />
                     <RowDefinition Height="9*" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0">
@@ -67,7 +71,7 @@
                                Text="{Binding ElementName=MenuControl,
                                               Path=SelectedItem.Header}" />
                 </Grid>
-                <dockablz:Layout Grid.Row="1">
+                <dockablz:Layout Grid.Row="1" IsEnabled="{Binding InternetConnectionAvailability}">
                     <dragablz:TabablzControl x:Name="MenuControl"
                                              Margin="0,-1,0,1"
                                              Background="{Binding RelativeSource={RelativeSource FindAncestor,
@@ -303,6 +307,14 @@
                              IsIndeterminate="True"
                              Visibility="{Binding ShowProgressBar,
                                                   Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <TextBlock Grid.Row="3"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="18"
+                           Foreground="#890000"
+                           Text="Ошибка сетевого подключения"
+                           Visibility="{Binding InternetConnectionAvailability,
+                                                Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
             </Grid>
             <metro:FlyoutsControl d:IsHidden="True">
                 <metro:Flyout x:Name="LeftFlyout"

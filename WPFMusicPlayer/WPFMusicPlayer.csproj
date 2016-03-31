@@ -107,6 +107,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Classes\InverseBooleanToVisibilityConverter.cs" />
+    <Compile Include="Classes\NetworkAvalibilityToBlurEffectConverter.cs" />
     <Compile Include="Classes\WebApi\Album.cs" />
     <Compile Include="Classes\WebApi\Artist.cs" />
     <Compile Include="Classes\WebApi\Avatars.cs" />

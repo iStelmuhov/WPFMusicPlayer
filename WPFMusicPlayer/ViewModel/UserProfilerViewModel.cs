@@ -59,7 +59,7 @@ namespace WPFMusicPlayer.ViewModel
         private int _currentPage;
         private int _currentPhotoNumber;
 
-        public MainViewModel MainVm { get; set; }
+        private MainViewModel MainVm { get; set; }
 
         public UserProfilerViewModel()
         {
@@ -121,10 +121,6 @@ namespace WPFMusicPlayer.ViewModel
         }
 
         private RelayCommand _signOutCommand;
-
-        /// <summary>
-        /// Gets the SignOut.
-        /// </summary>
         public RelayCommand SignOut
         {
             get

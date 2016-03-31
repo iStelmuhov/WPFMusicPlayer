@@ -27,6 +27,7 @@
         <ListView x:Name="AudiosList"
                   Grid.Row="1"
                   BorderThickness="0"
+                  
                   ItemsSource="{Binding Audios}"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                   ScrollViewer.VerticalScrollBarVisibility="Hidden">
@@ -35,7 +36,7 @@
                 <SolidColorBrush x:Key="{x:Static SystemColors.HotTrackColorKey}" Color="Transparent" />
             </ListView.Resources>
 
-            <ListView.ContextMenu>
+            <ListView.ContextMenu >
                 <ContextMenu>
                     <MenuItem Command="{Binding UpdateAudioListCommand}" Header="Обновить список аудиозаписей">
                         <MenuItem.Icon>
@@ -51,9 +52,9 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
 
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <DockPanel LastChildFill="True">
+            <ListView.ItemTemplate >
+                <DataTemplate >
+                    <DockPanel LastChildFill="True"> 
                         <ToggleButton x:Name="PausePlayButton"
                                       Width="42"
                                       Height="42"
