@@ -16,7 +16,6 @@ namespace WPFMusicPlayer.Classes
         public const string VkAudioPropertyName = "VkAudio";
 
         private Audio _vkAudio;
-
         public Audio VkAudio
         {
             get

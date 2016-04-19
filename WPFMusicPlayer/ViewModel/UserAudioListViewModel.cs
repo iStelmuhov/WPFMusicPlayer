@@ -114,10 +114,10 @@ namespace WPFMusicPlayer.ViewModel
                         }
 
 
-                        if (audio.OwnerId != null) MainVm.VkApi.Audio.Delete((ulong)audioId, audio.OwnerId.Value);
+                        if (audio.OwnerId != null) MainVm.VkApi.Audio.Delete(audioId, audio.OwnerId.Value);
                             Audios.Remove(audio);
 
-                        // ReSharper disable once ExplicitCallerInfoArgument
+                        
                         RaisePropertyChanged(AudiosPropertyName);
                     }));
             }
@@ -177,7 +177,7 @@ namespace WPFMusicPlayer.ViewModel
             if (MainVm.VkApi.UserId != null)
             {
                 MainVm.ShowProgressBar = true;
-                Audios = new ObservableCollection<Audio>(MainVm.VkApi.Audio.Get((ulong)MainVm.VkApi.UserId.Value));
+                Audios = new ObservableCollection<Audio>(MainVm.VkApi.Audio.Get(MainVm.VkApi.UserId.Value));
                 MainVm.ShowProgressBar = false;
             }
                 

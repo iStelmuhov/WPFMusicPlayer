@@ -116,7 +116,6 @@ where TChildItem : DependencyObject
 
         private RelayCommand<Uri> _saveAudioFileCommand;
 
-
         public RelayCommand<Uri> SaveAudioFile
         {
             get
@@ -144,7 +143,6 @@ where TChildItem : DependencyObject
                     }));
             }
         }
-
 
         private void WebClient_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {

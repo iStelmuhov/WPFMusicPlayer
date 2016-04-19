@@ -19,6 +19,9 @@
                    MinHeight="550"
                    Background="{DynamicResource MaterialDesignPaper}"
                    GlowBrush="{DynamicResource AccentColorBrush}"
+                   Icon="../Icons/beats.png"
+                   IconEdgeMode="Aliased"
+                   ShowIconOnTitleBar="False"
                    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
                    WindowTransitionsEnabled="False"
                    mc:Ignorable="d">
@@ -26,7 +29,6 @@
     <Window.DataContext>
         <local:MainViewModel />
     </Window.DataContext>
-
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closing">
             <command:EventToCommand Command="{Binding WindowClosing}" />
@@ -320,9 +322,13 @@
                 <metro:Flyout x:Name="LeftFlyout"
                               Width="{Binding ElementName=PlayerArea,
                                               Path=ActualWidth}"
+                              AllowFocusElement="True"
+                              AnimateOnPositionChange="True"
+                              AnimateOpacity="True"
+                              AreAnimationsEnabled="True"
                               Background="{DynamicResource PrimaryHueDarkBrush}"
                               Foreground="White"
-                              Header="Настройки"
+                              Header="Оформелние"
                               Position="Left">
                     <views:SettingsFlyout />
                 </metro:Flyout>

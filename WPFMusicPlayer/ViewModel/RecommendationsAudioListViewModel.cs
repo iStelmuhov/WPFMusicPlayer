@@ -92,10 +92,10 @@ namespace WPFMusicPlayer.ViewModel
                         var audio = Audios.First(a => a.Id == audioId);
                         if (MainVm.VkApi.UserId != null)
                         {
-                            var userAudios = new List<Audio>(MainVm.VkApi.Audio.Get((ulong)MainVm.VkApi.UserId.Value));
+                            var userAudios = new List<Audio>(MainVm.VkApi.Audio.Get(MainVm.VkApi.UserId.Value));
 
                             if (userAudios.FirstOrDefault(a => a.Title == audio.Title && a.Artist == audio.Artist) == null && audio.OwnerId!=null)
-                                MainVm.VkApi.Audio.Add((ulong) audioId, audio.OwnerId.Value);
+                                MainVm.VkApi.Audio.Add( audioId, audio.OwnerId.Value);
                             else
                             {
                                 var materialSettings = new MetroDialogSettings
@@ -158,7 +158,7 @@ namespace WPFMusicPlayer.ViewModel
             if (MainVm.VkApi.UserId != null)
             {
                 MainVm.ShowProgressBar = true;
-                Audios = new ObservableCollection<Audio>(MainVm.VkApi.Audio.GetRecommendations((ulong)MainVm.VkApi.UserId.Value));
+                Audios = new ObservableCollection<Audio>(MainVm.VkApi.Audio.GetRecommendations(MainVm.VkApi.UserId.Value));
                 MainVm.ShowProgressBar = true;
             }
                 

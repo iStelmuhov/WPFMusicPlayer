@@ -8,7 +8,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
              Foreground="WhiteSmoke"
-             d:DesignHeight="300"
+             d:DesignHeight="400"
              d:DesignWidth="300"
              mc:Ignorable="d">
     <UserControl.DataContext>
@@ -99,10 +99,12 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="10*" />
         </Grid.RowDefinitions>
-        <StackPanel Margin="8" Orientation="Horizontal">
+        <StackPanel Grid.Row="0"
+                    Margin="8"
+                    Orientation="Horizontal">
             <TextBlock VerticalAlignment="Center">Светлая</TextBlock>
             <ToggleButton Margin="8 0 16 0"
                           Command="{Binding ChangeLightDarkTheme}"
@@ -111,21 +113,17 @@
                           IsChecked="{Binding MainVm.Settings.IsDark}" />
             <TextBlock VerticalAlignment="Center">Тёмная</TextBlock>
         </StackPanel>
-        <Expander Grid.Row="1"
-                  VerticalAlignment="Top"
-                  Foreground="White">
-            <Expander.Header>
-                <TextBlock FontSize="16" Text="Изменить цвет" />
-            </Expander.Header>
-            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <ItemsControl ItemsSource="{Binding Swatches, Mode=OneTime}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ItemsControl>
-            </ScrollViewer>
-        </Expander>
+
+        <ScrollViewer Grid.Row="1"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding Swatches, Mode=OneTime}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
 </UserControl>
