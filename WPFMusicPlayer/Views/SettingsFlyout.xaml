@@ -7,9 +7,9 @@
              xmlns:materialDesignColors="clr-namespace:MaterialDesignColors;assembly=MaterialDesignColors"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
-             Foreground="WhiteSmoke"
              d:DesignHeight="400"
              d:DesignWidth="300"
+             Foreground="WhiteSmoke"
              mc:Ignorable="d">
     <UserControl.DataContext>
         <local:SettingsFlyoutViewModel />

@@ -65,8 +65,6 @@ namespace WPFMusicPlayer.ViewModel
         {
             MainVm = ((MainViewModel)Application.Current.MainWindow.DataContext);
 
-           
-
             _currentPage = 1;
             _currentPhotoNumber = 1;
 

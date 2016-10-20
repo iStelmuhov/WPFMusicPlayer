@@ -328,7 +328,7 @@
                               AreAnimationsEnabled="True"
                               Background="{DynamicResource PrimaryHueDarkBrush}"
                               Foreground="White"
-                              Header="Оформелние"
+                              Header="Оформление"
                               Position="Left">
                     <views:SettingsFlyout />
                 </metro:Flyout>
